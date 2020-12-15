@@ -159,7 +159,7 @@ const EditTextareaField = (props) => {
 	);
 };
 
-const EditBrewInfo = (props) => {
+const EditBrewInfo = (props) => {  // rework - auto-generate, not hard-coded
 	return (
 		<div id="brew-information" class="brew-information">
 			<EditTextField 
@@ -167,7 +167,7 @@ const EditBrewInfo = (props) => {
 				className="brew-field"
 				field_id="brew-name"
 				field_name="brew-name"
-				field_label="Name:"
+				field_label="Name: "
 				value={props.data.name}
 				onChange={props.onChange("name")} />
 			<EditTextField 
@@ -175,7 +175,7 @@ const EditBrewInfo = (props) => {
 				className="brew-field"
 				field_id="brew-style"
 				field_name="brew-style"
-				field_label="Style:"
+				field_label="Style: "
 				value={props.data.style}
 				onChange={props.onChange("style")} />
 			<EditTextareaField
@@ -183,7 +183,7 @@ const EditBrewInfo = (props) => {
 				className="brew-description-field"
 				field_id="brew-description"
 				field_name="brew-description"
-				field_label="Description:"
+				field_label="Description: "
 				value={props.data.description}
 				onChange={props.onChange("description")}
 				cols={props.description_cols} rows={props.description_rows} />
@@ -210,7 +210,7 @@ const EditRecipeItem = (props) => {
 				.map((x, i) => {
 					return (
 						<div id={name(x) + "-wrapper"} className={"recipe-item-field-wrapper " + className(x) + "-wrapper"}>
-							<label for={name(x)} id={label(x)} className="recipe-item-field-label">{props.idx === 0 ? schema[props.type][x].label + ": " : ""}</label>
+							<label for={name(x)} id={label(x)} className="recipe-item-field-label">{schema[props.type][x].label + ": "}</label>
 							{
 								(() => {
 									switch(schema[props.type][x].type) {
