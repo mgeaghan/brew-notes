@@ -113,7 +113,11 @@ const schema = {
 			options: null,
 			default: 0
 		}
-	}
+	},
+	misc: null,
+	step_mash: null,
+	step_fermentation: null,
+	step_misc: null,
 };
 
 const EditTextField = (props) => {
@@ -186,51 +190,21 @@ const EditRecipeItem = (props) => {
 	);
 };
 
-const EditRecipeFermentableItem = (props) => {
-	const className = (field) => {
-		return "recipe-fermentable recipe-fermentable-" + field;
-	};
-	const name = (field) => {
-		return "recipe-fermentable-" + field + "-" + props.idx;
-	};
-	const label = (field) => {
-		return name(field) + "-label"
-	};
+const EditRecipeItemList = (props) => {
 	return (
-		<div id={"recipe-fermentable-item-" + props.idx} className="recipe-item recipe-fermentable-item">
-			<label for={name("ingredient")} id={label("ingredient")}></label>
-			<input type="text" id={name("ingredient")} className={className("ingredient")} name={name("ingredient")} value={props.values.ingredient} onChange={props.onChange("ingredient")}></input>
-			<label for={name("amount")} id={label("amount")}></label>
-			<input type="number" id={name("amount")} className={className("amount")} name={name("amount")} value={props.values.amount} onChange={props.onChange("amount")}></input>
-			<label for={name("units")} id={label("units")}></label>
-			<input type="text" id={name("units")} className={className("units")} name={name("units")} value={props.values.units} onChange={props.onChange("units")}></input>
-			<RemItemButton onClick={props.handleRemove} />
+		<div id={"recipe-item-list-" + props.type} className={"recipe-item-list"}>
+			<h4>{props.heading}</h4>
+			{props.data
+				.map((x, i) => EditRecipeItem({
+					type: props.type,
+					idx: i,
+					values: x,
+					onChange: props.handleRecipeChange(props.type, i),
+					handleRemove: props.handleRemRecipeItem(props.type, i)
+			}))}
+			<AddItemButton onClick={props.handleAddRecipeItem(props.type)} text={props.button_text} />
 		</div>
 	);
-};
-
-const EditRecipeHopsItem = (props) => {
-	return null;
-};
-
-const EditRecipeYeastItem = (props) => {
-	return null;
-};
-
-const EditRecipeMiscItem = (props) => {
-	return null;
-};
-
-const EditRecipeStepsMashItem = (props) => {
-	return null;
-};
-
-const EditRecipeStepsFermentationItem = (props) => {
-	return null;
-};
-
-const EditRecipeStepsMiscItem = (props) => {
-	return null;
 };
 
 const AddItemButton = (props) => {
@@ -264,9 +238,6 @@ class EditApp extends React.Component {
 		this._handleAddRecipeItem = this._handleAddRecipeItem.bind(this);
 		this._handleRemRecipeItem = this._handleRemRecipeItem.bind(this);
 		this._recipeItem = this._recipeItem.bind(this);
-		this._recipeFermentableItem = this._recipeFermentableItem.bind(this);
-		this._recipeHopsItem = this._recipeHopsItem.bind(this);
-		this._recipeYeastItem = this._recipeYeastItem.bind(this);
 	}
 
 	_recipeItem(type, data = {}) {
@@ -288,31 +259,6 @@ class EditApp extends React.Component {
 		} else {
 			return null;
 		}
-	}
-
-	_recipeFermentableItem(ingredient = "", amount = 0, units = "kg") {
-		return {
-			ingredient: ingredient,
-			amount: amount,
-			units: units
-		};
-	}
-
-	_recipeHopsItem(ingredient = "", amount = 0, units = "g") {
-		return {
-			ingredient: ingredient,
-			amount: amount,
-			units: units
-		};
-	}
-
-	_recipeYeastItem(name = "", amount = 1, units = "billion cells", attenuation = 0.75) {
-		return {
-			name: name,
-			amount: amount,
-			units: units,
-			attenuation: attenuation
-		};
 	}
 
 	_handleChange(field) {
@@ -388,36 +334,30 @@ class EditApp extends React.Component {
 						onChange={this._handleChange("description")}
 						cols={80} rows={10} />
 					<h3>Recipe</h3>
-					<h4>Fermentables</h4>
-					{this.state.fermentables
-						.map((x, i) => EditRecipeItem({
-							type: "fermentables",
-							idx: i,
-							values: x,
-							onChange: this._handleRecipeChange("fermentables", i),
-							handleRemove: this._handleRemRecipeItem("fermentables", i)
-					}))}
-					<AddItemButton onClick={this._handleAddRecipeItem("fermentables")} text="Add Fermentable" />
-					<h4>Hops</h4>
-					{this.state.hops
-						.map((x, i) => EditRecipeItem({
-							type: "hops",
-							idx: i,
-							values: x,
-							onChange: this._handleRecipeChange("hops", i),
-							handleRemove: this._handleRemRecipeItem("hops", i)
-					}))}
-					<AddItemButton onClick={this._handleAddRecipeItem("hops")} text="Add Hops" />
-					<h4>Yeast</h4>
-					{this.state.yeast
-						.map((x, i) => EditRecipeItem({
-							type: "yeast",
-							idx: i,
-							values: x,
-							onChange: this._handleRecipeChange("yeast", i),
-							handleRemove: this._handleRemRecipeItem("yeast", i)
-					}))}
-					<AddItemButton onClick={this._handleAddRecipeItem("yeast")} text="Add Yeast" />
+					<EditRecipeItemList
+						type="fermentables"
+						heading="Fermentables"
+						data={this.state.fermentables}
+						button_text="Add Fermentable"
+						handleRecipeChange={this._handleRecipeChange}
+						handleAddRecipeItem={this._handleAddRecipeItem}
+						handleRemRecipeItem={this._handleRemRecipeItem} />
+					<EditRecipeItemList
+						type="hops"
+						heading="Hops"
+						data={this.state.hops}
+						button_text="Add Hops"
+						handleRecipeChange={this._handleRecipeChange}
+						handleAddRecipeItem={this._handleAddRecipeItem}
+						handleRemRecipeItem={this._handleRemRecipeItem} />
+					<EditRecipeItemList
+						type="yeast"
+						heading="Yeast"
+						data={this.state.yeast}
+						button_text="Add Yeast"
+						handleRecipeChange={this._handleRecipeChange}
+						handleAddRecipeItem={this._handleAddRecipeItem}
+						handleRemRecipeItem={this._handleRemRecipeItem} />
 				</form>
 			</div>
 		);
