@@ -1,91 +1,135 @@
 import React from 'react';
 
 const schema = {
+	information: {
+		name: {
+			type: "string",
+			options: null,
+			default: ""
+		},
+		style: {
+			type: "string",
+			options: null,
+			default: ""
+		},
+		description: {
+			type: "textarea",
+			options: null,
+			default: ""
+		}
+	},
 	fermentables: {
 		ingredient: {
 			type: "string",
-			options: null
+			options: null,
+			default: ""
 		},
 		amount: {
 			type: "number",
-			options: null
+			options: null,
+			default: 0
 		},
 		units: {
-			type: "string",
-			options: ["kg", "g"]
+			type: "select",
+			options: ["kg", "g"],
+			default: "kg"
 		},
 		ppg: {
 			type: "number",
-			options: null
+			options: null,
+			default: 0
 		},
 		colour: {
 			type: "number",
-			options: null
+			options: null,
+			default: 0
 		},
 		colour_units: {
-			type: "string",
-			options: ["L", "SRM", "EBC"]
+			type: "select",
+			options: ["L", "SRM", "EBC"],
+			default: "SRM"
 		},
 		use: {
-			type: "string",
-			options: ["mash", "steep", "extract"]
+			type: "select",
+			options: ["mash", "steep", "extract"],
+			default: "mash"
 		},
 	},
 	hops: {
 		ingredient: {
 			type: "string",
-			options: null
+			options: null,
+			default: ""
 		},
 		amount: {
 			type: "number",
-			options: null
+			options: null,
+			default: 0
 		},
 		units: {
-			type: "string",
-			options: ["g"]
+			type: "select",
+			options: ["g"],
+			default: "g"
 		},
 		use: {
-			type: "string",
-			options: ["boil", "flame-out", "dry-hop"]
+			type: "select",
+			options: ["boil", "flame-out", "dry-hop"],
+			default: "boil"
 		},
 		time: {
 			type: "number",
-			options: null
+			options: null,
+			default: 0
 		},
 		aa: {
 			type: "number",
-			options: null
+			options: null,
+			default: 0
 		},
 		ibu: {
 			type: "number",
-			options: null
+			options: null,
+			default: 0
 		}
 	},
 	yeast: {
 		name: {
 			type: "string",
-			options: null
+			options: null,
+			default: ""
 		},
 		amount: {
 			type: "number",
-			options: null
+			options: null,
+			default: 0
 		},
 		units: {
-			type: "string",
-			options: ["billion cells"]
+			type: "select",
+			options: ["billion cells"],
+			default: "billion cells"
 		},
 		attenuation: {
 			type: "number",
-			options: null
+			options: null,
+			default: 0
 		}
 	}
 };
 
-const EditField = (props) => {
+const EditTextField = (props) => {
 	return (
 		<div id={props.id} className={props.className}>
 			<label for={props.field_name} id={props.field_name + "-label"}>{props.field_label}</label>
 			<input type="text" id={props.field_id} name={props.field_name} value={props.value} onChange={props.onChange}></input>
+		</div>
+	);
+};
+
+const EditTextareaField = (props) => {
+	return (
+		<div id={props.id} className={props.className}>
+			<label for={props.field_name} id={props.field_name + "-label"}>{props.field_label}</label>
+			<textarea id={props.field_id} name={props.field_name} value={props.value} onChange={props.onChange} rows={props.rows} cols={props.cols}></textarea>
 		</div>
 	);
 };
@@ -107,14 +151,33 @@ const EditRecipeItem = (props) => {
 		<div id={recipe_item_id} className={recipe_item_class}>
 			{Object.keys(schema[props.type])
 				.map(x => {
-					console.log(x);
-					console.log(props.values);
-					console.log(props.values.hasOwnProperty(x));
-					return props.values.hasOwnProperty(x) ?
+					return (
 						<div id={name(x) + "-wrapper"} className={"recipe-item-wrapper " + className(x) + "-wrapper"}>
 							<label for={name(x)} id={label(x)}></label>
-							<input type={schema[props.type][x].type} id={name(x)} className={className(x)} name={name(x)} value={props.values[x]} onChange={props.onChange(x)}></input>
-						</div> : null
+							{
+								(() => {
+									switch(schema[props.type][x].type) {
+										case "string":
+										case "number":
+											return (<input type={schema[props.type][x].type} id={name(x)} className={className(x)} name={name(x)} value={props.values.hasOwnProperty(x) ? props.values[x] : ""} onChange={props.onChange(x)}></input>);
+										case "select":
+											return (
+												<select id={name(x)} className={className(x)} name={name(x)} onChange={props.onChange(x)}>
+												{
+													schema[props.type][x].options
+														.map((y, i) => {
+															return (<option value={y} selected={props.values.hasOwnProperty(x) ? y === props.values[x] : i === 0}>{y}</option>);
+														})
+												}
+												</select>
+											);
+										default:
+											return null;
+									}
+								})()
+							}
+						</div>
+					);
 				})
 				.filter(x => x)
 			}
@@ -188,20 +251,43 @@ class EditApp extends React.Component {
 
 		
 		this.state = {
-			name: "",
-			style: "",
-			fermentables: [this._recipeFermentableItem("malt", 5)],
-			hops: [this._recipeHopsItem("hops", 10)],
-			yeast: [this._recipeYeastItem("yeast")]
+			name: "brew 1",
+			style: "ale",
+			description: "a beer",
+			fermentables: [this._recipeItem("fermentables", {ingredient: "malt", amount: 5})],
+			hops: [this._recipeItem("hops", {ingredient: "some hops", amount: 10})],
+			yeast: [this._recipeItem("yeast", {name: "some yeast", amount: 1})]
 		};
 		
 		this._handleChange = this._handleChange.bind(this);
 		this._handleRecipeChange = this._handleRecipeChange.bind(this);
 		this._handleAddRecipeItem = this._handleAddRecipeItem.bind(this);
 		this._handleRemRecipeItem = this._handleRemRecipeItem.bind(this);
+		this._recipeItem = this._recipeItem.bind(this);
 		this._recipeFermentableItem = this._recipeFermentableItem.bind(this);
 		this._recipeHopsItem = this._recipeHopsItem.bind(this);
 		this._recipeYeastItem = this._recipeYeastItem.bind(this);
+	}
+
+	_recipeItem(type, data = {}) {
+		if (schema.hasOwnProperty(type)) {
+			if (typeof(data) === "object") {
+				let props = Object.keys(schema[type]);
+				let ret = {};
+				props.forEach(x => {
+					if (data.hasOwnProperty(x)) {
+						ret[x] = data[x];
+					} else {
+						ret[x] = schema[type][x].default;
+					}
+				});
+				return ret;
+			} else {
+				return null;
+			}
+		} else {
+			return null;
+		}
 	}
 
 	_recipeFermentableItem(ingredient = "", amount = 0, units = "kg") {
@@ -248,11 +334,11 @@ class EditApp extends React.Component {
 		};
 	}
 
-	_handleAddRecipeItem(type, item) {
+	_handleAddRecipeItem(type) {
 		return () => {
 			let update_state = {};
 			update_state[type] = [...this.state[type]];
-			update_state[type].push(item);
+			update_state[type].push(this._recipeItem(type));
 			this.setState(update_state);
 		};
 	}
@@ -276,7 +362,7 @@ class EditApp extends React.Component {
 		return (
 			<div id="editor">
 				<form>
-					<EditField 
+					<EditTextField 
 						id="brew-name-div"
 						className="brew-field"
 						field_id="brew-name"
@@ -284,7 +370,7 @@ class EditApp extends React.Component {
 						field_label="Name:"
 						value={this.state.name}
 						onChange={this._handleChange("name")} />
-					<EditField 
+					<EditTextField 
 						id="brew-style-div"
 						className="brew-field"
 						field_id="brew-style"
@@ -292,6 +378,15 @@ class EditApp extends React.Component {
 						field_label="Style:"
 						value={this.state.style}
 						onChange={this._handleChange("style")} />
+					<EditTextareaField
+						id="brew-description-div"
+						className="brew-description-field"
+						field_id="brew-description"
+						field_name="brew-description"
+						field_label="Description:"
+						value={this.state.description}
+						onChange={this._handleChange("description")}
+						cols={80} rows={10} />
 					<h3>Recipe</h3>
 					<h4>Fermentables</h4>
 					{this.state.fermentables
@@ -302,7 +397,7 @@ class EditApp extends React.Component {
 							onChange: this._handleRecipeChange("fermentables", i),
 							handleRemove: this._handleRemRecipeItem("fermentables", i)
 					}))}
-					<AddItemButton onClick={this._handleAddRecipeItem("fermentables", this._recipeFermentableItem())} text="Add Fermentable" />
+					<AddItemButton onClick={this._handleAddRecipeItem("fermentables")} text="Add Fermentable" />
 					<h4>Hops</h4>
 					{this.state.hops
 						.map((x, i) => EditRecipeItem({
@@ -312,7 +407,7 @@ class EditApp extends React.Component {
 							onChange: this._handleRecipeChange("hops", i),
 							handleRemove: this._handleRemRecipeItem("hops", i)
 					}))}
-					<AddItemButton onClick={this._handleAddRecipeItem("hops", this._recipeHopsItem())} text="Add Hops" />
+					<AddItemButton onClick={this._handleAddRecipeItem("hops")} text="Add Hops" />
 					<h4>Yeast</h4>
 					{this.state.yeast
 						.map((x, i) => EditRecipeItem({
@@ -322,7 +417,7 @@ class EditApp extends React.Component {
 							onChange: this._handleRecipeChange("yeast", i),
 							handleRemove: this._handleRemRecipeItem("yeast", i)
 					}))}
-					<AddItemButton onClick={this._handleAddRecipeItem("yeast", this._recipeYeastItem())} text="Add Yeast" />
+					<AddItemButton onClick={this._handleAddRecipeItem("yeast")} text="Add Yeast" />
 				</form>
 			</div>
 		);
