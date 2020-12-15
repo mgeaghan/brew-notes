@@ -5,113 +5,134 @@ const schema = {
 		name: {
 			type: "string",
 			options: null,
-			default: ""
+			default: "",
+			label: "Name"
 		},
 		style: {
 			type: "string",
 			options: null,
-			default: ""
+			default: "",
+			label: "Style"
 		},
 		description: {
 			type: "textarea",
 			options: null,
-			default: ""
+			default: "",
+			label: "Description"
 		}
 	},
 	fermentables: {
 		ingredient: {
 			type: "string",
 			options: null,
-			default: ""
+			default: "",
+			label: "Name"
 		},
 		amount: {
 			type: "number",
 			options: null,
-			default: 0
+			default: 0,
+			label: "Amount"
 		},
 		units: {
 			type: "select",
 			options: ["kg", "g"],
-			default: "kg"
+			default: "kg",
+			label: "Units"
 		},
 		ppg: {
 			type: "number",
 			options: null,
-			default: 0
+			default: 0,
+			label: "ppg"
 		},
 		colour: {
 			type: "number",
 			options: null,
-			default: 0
+			default: 0,
+			label: "Colour"
 		},
 		colour_units: {
 			type: "select",
 			options: ["L", "SRM", "EBC"],
-			default: "SRM"
+			default: "SRM",
+			label: "Units"
 		},
 		use: {
 			type: "select",
 			options: ["mash", "steep", "extract"],
-			default: "mash"
+			default: "mash",
+			label: "Use"
 		},
 	},
 	hops: {
 		ingredient: {
 			type: "string",
 			options: null,
-			default: ""
+			default: "",
+			label: "Name"
 		},
 		amount: {
 			type: "number",
 			options: null,
-			default: 0
+			default: 0,
+			label: "Amount"
 		},
 		units: {
 			type: "select",
 			options: ["g"],
-			default: "g"
+			default: "g",
+			label: "Units"
 		},
 		use: {
 			type: "select",
 			options: ["boil", "flame-out", "dry-hop"],
-			default: "boil"
+			default: "boil",
+			label: "Use"
 		},
 		time: {
 			type: "number",
 			options: null,
-			default: 0
+			default: 0,
+			label: "Time"
 		},
 		aa: {
 			type: "number",
 			options: null,
-			default: 0
+			default: 0,
+			label: "AA"
 		},
 		ibu: {
 			type: "number",
 			options: null,
-			default: 0
+			default: 0,
+			label: "IBU"
 		}
 	},
 	yeast: {
 		name: {
 			type: "string",
 			options: null,
-			default: ""
+			default: "",
+			label: "Name"
 		},
 		amount: {
 			type: "number",
 			options: null,
-			default: 0
+			default: 0,
+			label: "Amount"
 		},
 		units: {
 			type: "select",
 			options: ["billion cells"],
-			default: "billion cells"
+			default: "billion cells",
+			label: "Units"
 		},
 		attenuation: {
 			type: "number",
 			options: null,
-			default: 0
+			default: 0,
+			label: "Attn. (%)"
 		}
 	},
 	misc: null,
@@ -138,6 +159,38 @@ const EditTextareaField = (props) => {
 	);
 };
 
+const EditBrewInfo = (props) => {
+	return (
+		<div id="brew-information" class="brew-information">
+			<EditTextField 
+				id="brew-name-div"
+				className="brew-field"
+				field_id="brew-name"
+				field_name="brew-name"
+				field_label="Name:"
+				value={props.data.name}
+				onChange={props.onChange("name")} />
+			<EditTextField 
+				id="brew-style-div"
+				className="brew-field"
+				field_id="brew-style"
+				field_name="brew-style"
+				field_label="Style:"
+				value={props.data.style}
+				onChange={props.onChange("style")} />
+			<EditTextareaField
+				id="brew-description-div"
+				className="brew-description-field"
+				field_id="brew-description"
+				field_name="brew-description"
+				field_label="Description:"
+				value={props.data.description}
+				onChange={props.onChange("description")}
+				cols={props.description_cols} rows={props.description_rows} />
+		</div>
+	);
+};
+
 const EditRecipeItem = (props) => {
 	const recipe_type = "recipe-" + props.type;
 	const recipe_item_id = recipe_type + "-item-" + props.idx;
@@ -154,10 +207,10 @@ const EditRecipeItem = (props) => {
 	return (
 		<div id={recipe_item_id} className={recipe_item_class}>
 			{Object.keys(schema[props.type])
-				.map(x => {
+				.map((x, i) => {
 					return (
-						<div id={name(x) + "-wrapper"} className={"recipe-item-wrapper " + className(x) + "-wrapper"}>
-							<label for={name(x)} id={label(x)}></label>
+						<div id={name(x) + "-wrapper"} className={"recipe-item-field-wrapper " + className(x) + "-wrapper"}>
+							<label for={name(x)} id={label(x)} className="recipe-item-field-label">{props.idx === 0 ? schema[props.type][x].label + ": " : ""}</label>
 							{
 								(() => {
 									switch(schema[props.type][x].type) {
@@ -169,8 +222,8 @@ const EditRecipeItem = (props) => {
 												<select id={name(x)} className={className(x)} name={name(x)} onChange={props.onChange(x)}>
 												{
 													schema[props.type][x].options
-														.map((y, i) => {
-															return (<option value={y} selected={props.values.hasOwnProperty(x) ? y === props.values[x] : i === 0}>{y}</option>);
+														.map((y, j) => {
+															return (<option value={y} selected={props.values.hasOwnProperty(x) ? y === props.values[x] : j === 0}>{y}</option>);
 														})
 												}
 												</select>
@@ -209,13 +262,13 @@ const EditRecipeItemList = (props) => {
 
 const AddItemButton = (props) => {
 	return (
-		<div id="add-item" onClick={props.onClick}>{props.text}</div>
+		<div className="add-rem-item-button add-item" onClick={props.onClick}><i className="fas fa-plus"></i></div>
 	);
 };
 
 const RemItemButton = (props) => {
 	return (
-		<div id="rem-item" onClick={props.onClick}>Remove item</div>
+		<div className="add-rem-item-button rem-item" onClick={props.onClick}><i className="fas fa-minus"></i></div>
 	);
 }
 
@@ -225,9 +278,11 @@ class EditApp extends React.Component {
 
 		
 		this.state = {
-			name: "brew 1",
-			style: "ale",
-			description: "a beer",
+			information: {
+				name: "brew 1",
+				style: "ale",
+				description: "a beer",
+			},
 			fermentables: [this._recipeItem("fermentables", {ingredient: "malt", amount: 5})],
 			hops: [this._recipeItem("hops", {ingredient: "some hops", amount: 10})],
 			yeast: [this._recipeItem("yeast", {name: "some yeast", amount: 1})]
@@ -308,31 +363,11 @@ class EditApp extends React.Component {
 		return (
 			<div id="editor">
 				<form>
-					<EditTextField 
-						id="brew-name-div"
-						className="brew-field"
-						field_id="brew-name"
-						field_name="brew-name"
-						field_label="Name:"
-						value={this.state.name}
-						onChange={this._handleChange("name")} />
-					<EditTextField 
-						id="brew-style-div"
-						className="brew-field"
-						field_id="brew-style"
-						field_name="brew-style"
-						field_label="Style:"
-						value={this.state.style}
-						onChange={this._handleChange("style")} />
-					<EditTextareaField
-						id="brew-description-div"
-						className="brew-description-field"
-						field_id="brew-description"
-						field_name="brew-description"
-						field_label="Description:"
-						value={this.state.description}
-						onChange={this._handleChange("description")}
-						cols={80} rows={10} />
+					<EditBrewInfo
+						data={this.state.information}
+						onChange={this._handleChange}
+						description_cols={80}
+						description_rows={10} />
 					<h3>Recipe</h3>
 					<EditRecipeItemList
 						type="fermentables"
