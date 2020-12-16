@@ -28,17 +28,17 @@ body {
 	flex-wrap: wrap;
 }
 
-.recipe-item-field-wrapper {
+.field-container {
 	display: inline;
 	margin-right: 5px;
 	margin-top: 5px;
 }
 
-.recipe-misc-notes-wrapper {
+.textarea-field-container {
 	flex-basis: 100%;
 }
 
-.recipe-item-field-label {
+.field-label {
 	display: block;
 	padding-left: 1px;
 }

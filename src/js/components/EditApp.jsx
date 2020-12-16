@@ -47,7 +47,7 @@ const EditSelectionField = (props) => {
 const fieldParams = (section, field) => {
 	return {
 		id: "brew-" + section + "-" + field + "-container",
-		className:  + section + "-field-container",
+		className: "field-container brew-" + section + "-field-container",
 		field_id: "brew-" + section + "-" + field,
 		field_className: "brew-" + section + "-field-container",
 		field_name: "brew-" + section + "-" + field,
@@ -66,6 +66,7 @@ const EditField = (section, field, value, onChange) => {
 			case "number":
 				return EditNumberField(params);
 			case "textarea":
+				params.className = "textarea-field-container " + params.className;
 				return EditTextareaField(params);
 			case "select":
 				params.options = schema[section][field].options;
@@ -89,54 +90,13 @@ const EditBrewInfo = (props) => {
 };
 
 const EditRecipeItem = (props) => {
-	const recipe_type = "recipe-" + props.type;
-	const recipe_item_id = recipe_type + "-item-" + props.idx;
-	const recipe_item_class = "recipe-item recipe-" + props.type + "-item";
-	const className = (field) => {
-		return recipe_type + " " + recipe_type + "-" + field;
-	};
-	const name = (field) => {
-		return recipe_type + "-" + field + "-" + props.idx;
-	};
-	const label = (field) => {
-		return name(field) + "-label"
-	};
 	return (
 		<div className="recipe-item-wrapper">
-			<div id={recipe_item_id} className={recipe_item_class}>
-				{Object.keys(schema[props.type])
-					.map((x, i) => {
-						return (
-							<div id={name(x) + "-wrapper"} className={"recipe-item-field-wrapper " + className(x) + "-wrapper"}>
-								<label for={name(x)} id={label(x)} className="recipe-item-field-label">{schema[props.type][x].label + ": "}</label>
-								{
-									(() => {
-										switch(schema[props.type][x].type) {
-											case "string":
-											case "number":
-												return (<input type={schema[props.type][x].type} id={name(x)} className={className(x)} name={name(x)} value={props.values.hasOwnProperty(x) ? props.values[x] : ""} onChange={props.onChange(x)}></input>);
-											case "select":
-												return (
-													<select id={name(x)} className={className(x)} name={name(x)} onChange={props.onChange(x)}>
-													{
-														schema[props.type][x].options
-															.map((y, j) => {
-																return (<option value={y} selected={props.values.hasOwnProperty(x) ? y === props.values[x] : j === 0}>{y}</option>);
-															})
-													}
-													</select>
-												);
-											case "textarea":
-												return (<textarea type={schema[props.type][x].type} id={name(x)} className={className(x)} name={name(x)} value={props.values.hasOwnProperty(x) ? props.values[x] : ""} onChange={props.onChange(x)}></textarea>);
-											default:
-												return null;
-										}
-									})()
-								}
-							</div>
-						);
-					})
-					.filter(x => x)
+			<div className="recipe-item">
+				{Object.keys(schema[props.type]).map((x, i) => {
+					let value = props.data.hasOwnProperty(x) ? props.data[x] : "";
+					return EditField(props.type, x, value, props.onChange)
+				}).filter(x => x)
 				}
 			</div>
 			<RemItemButton onClick={props.handleRemove} />
@@ -152,7 +112,7 @@ const EditRecipeItemList = (props) => {
 				.map((x, i) => EditRecipeItem({
 					type: props.type,
 					idx: i,
-					values: x,
+					data: x,
 					onChange: props.handleRecipeChange(props.type, i),
 					handleRemove: props.handleRemRecipeItem(props.type, i)
 			}))}
