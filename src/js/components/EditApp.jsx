@@ -1,145 +1,6 @@
 import React from 'react';
+import schema from '../schema';
 
-const schema = {
-	information: {
-		name: {
-			type: "string",
-			options: null,
-			default: "",
-			label: "Name"
-		},
-		style: {
-			type: "string",
-			options: null,
-			default: "",
-			label: "Style"
-		},
-		description: {
-			type: "textarea",
-			options: null,
-			default: "",
-			label: "Description"
-		}
-	},
-	fermentables: {
-		ingredient: {
-			type: "string",
-			options: null,
-			default: "",
-			label: "Name"
-		},
-		amount: {
-			type: "number",
-			options: null,
-			default: 0,
-			label: "Amount"
-		},
-		units: {
-			type: "select",
-			options: ["kg", "g"],
-			default: "kg",
-			label: "Units"
-		},
-		ppg: {
-			type: "number",
-			options: null,
-			default: 0,
-			label: "ppg"
-		},
-		colour: {
-			type: "number",
-			options: null,
-			default: 0,
-			label: "Colour"
-		},
-		colour_units: {
-			type: "select",
-			options: ["L", "SRM", "EBC"],
-			default: "SRM",
-			label: "Units"
-		},
-		use: {
-			type: "select",
-			options: ["mash", "steep", "extract"],
-			default: "mash",
-			label: "Use"
-		},
-	},
-	hops: {
-		ingredient: {
-			type: "string",
-			options: null,
-			default: "",
-			label: "Name"
-		},
-		amount: {
-			type: "number",
-			options: null,
-			default: 0,
-			label: "Amount"
-		},
-		units: {
-			type: "select",
-			options: ["g"],
-			default: "g",
-			label: "Units"
-		},
-		use: {
-			type: "select",
-			options: ["boil", "flame-out", "dry-hop"],
-			default: "boil",
-			label: "Use"
-		},
-		time: {
-			type: "number",
-			options: null,
-			default: 0,
-			label: "Time"
-		},
-		aa: {
-			type: "number",
-			options: null,
-			default: 0,
-			label: "AA"
-		},
-		ibu: {
-			type: "number",
-			options: null,
-			default: 0,
-			label: "IBU"
-		}
-	},
-	yeast: {
-		name: {
-			type: "string",
-			options: null,
-			default: "",
-			label: "Name"
-		},
-		amount: {
-			type: "number",
-			options: null,
-			default: 0,
-			label: "Amount"
-		},
-		units: {
-			type: "select",
-			options: ["billion cells"],
-			default: "billion cells",
-			label: "Units"
-		},
-		attenuation: {
-			type: "number",
-			options: null,
-			default: 0,
-			label: "Attn. (%)"
-		}
-	},
-	misc: null,
-	step_mash: null,
-	step_fermentation: null,
-	step_misc: null,
-};
 
 const EditTextField = (props) => {
 	return (
@@ -159,34 +20,33 @@ const EditTextareaField = (props) => {
 	);
 };
 
-const EditBrewInfo = (props) => {  // rework - auto-generate, not hard-coded
+const EditBrewInfo = (props) => {
 	return (
 		<div id="brew-information" class="brew-information">
-			<EditTextField 
-				id="brew-name-div"
-				className="brew-field"
-				field_id="brew-name"
-				field_name="brew-name"
-				field_label="Name: "
-				value={props.data.name}
-				onChange={props.onChange("name")} />
-			<EditTextField 
-				id="brew-style-div"
-				className="brew-field"
-				field_id="brew-style"
-				field_name="brew-style"
-				field_label="Style: "
-				value={props.data.style}
-				onChange={props.onChange("style")} />
-			<EditTextareaField
-				id="brew-description-div"
-				className="brew-description-field"
-				field_id="brew-description"
-				field_name="brew-description"
-				field_label="Description: "
-				value={props.data.description}
-				onChange={props.onChange("description")}
-				cols={props.description_cols} rows={props.description_rows} />
+			{Object.keys(schema.information).map(x => {
+				let params = {
+					id: "brew-" + x + "-div",
+					field_id: "brew-" + x,
+					field_name: "brew-" + x,
+					field_label: schema.information[x].label + ": ",
+					value: props.data.hasOwnProperty(x) ? props.data[x] : "",
+					onChange: props.onChange(x),
+					cols: props.hasOwnProperty("textarea_cols") ? props.textarea_cols : 80,
+					rows: props.hasOwnProperty("textarea_rows") ? props.textarea_rows : 10
+				};
+				return (() => {
+					switch(schema.information[x].type) {
+						case "string":
+							params.className = "brew-field";
+							return EditTextField(params);
+						case "textarea":
+							params.className = "brew-textarea-field";
+							return EditTextareaField(params);
+						default:
+							return null;
+					}
+				})();
+			})}
 		</div>
 	);
 };
@@ -278,14 +138,10 @@ class EditApp extends React.Component {
 
 		
 		this.state = {
-			information: {
-				name: "brew 1",
-				style: "ale",
-				description: "a beer",
-			},
-			fermentables: [this._recipeItem("fermentables", {ingredient: "malt", amount: 5})],
-			hops: [this._recipeItem("hops", {ingredient: "some hops", amount: 10})],
-			yeast: [this._recipeItem("yeast", {name: "some yeast", amount: 1})]
+			information: this._infoItem(),
+			fermentables: [this._recipeItem("fermentables")],
+			hops: [this._recipeItem("hops")],
+			yeast: [this._recipeItem("yeast")]
 		};
 		
 		this._handleChange = this._handleChange.bind(this);
@@ -293,6 +149,24 @@ class EditApp extends React.Component {
 		this._handleAddRecipeItem = this._handleAddRecipeItem.bind(this);
 		this._handleRemRecipeItem = this._handleRemRecipeItem.bind(this);
 		this._recipeItem = this._recipeItem.bind(this);
+		this._infoItem = this._infoItem.bind(this);
+	}
+
+	_infoItem(data = {}) {
+		if (typeof(data) === "object") {
+			let props = Object.keys(schema.information);
+			let ret = {};
+			props.forEach(x => {
+				if (data.hasOwnProperty(x)) {
+					ret[x] = data[x];
+				} else {
+					ret[x] = schema.information[x].default;
+				}
+			});
+			return ret;
+		} else {
+			return null;
+		}
 	}
 
 	_recipeItem(type, data = {}) {
@@ -318,8 +192,8 @@ class EditApp extends React.Component {
 
 	_handleChange(field) {
 		return (e) => {
-			let update_state = {};
-			update_state[field] = e.target.value;
+			let update_state = {information: Object.assign({}, this.state.information)};
+			update_state.information[field] = e.target.value;
 			this.setState(update_state);
 		};
 	}
@@ -366,8 +240,8 @@ class EditApp extends React.Component {
 					<EditBrewInfo
 						data={this.state.information}
 						onChange={this._handleChange}
-						description_cols={80}
-						description_rows={10} />
+						textarea_cols={80}
+						textarea_rows={10} />
 					<h3>Recipe</h3>
 					<EditRecipeItemList
 						type="fermentables"
