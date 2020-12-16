@@ -36,7 +36,7 @@ const schema = {
 			type: "select",
 			options: ["kg", "g"],
 			default: "kg",
-			label: "Units"
+			label: "Weight Units"
 		},
 		ppg: {
 			type: "number",
@@ -54,7 +54,7 @@ const schema = {
 			type: "select",
 			options: ["L", "SRM", "EBC"],
 			default: "SRM",
-			label: "Units"
+			label: "Colour Units"
 		},
 		use: {
 			type: "select",
@@ -133,7 +133,38 @@ const schema = {
 			label: "Attn. (%)"
 		}
 	},
-	misc: null,
+	misc: {
+		ingredient: {
+			type: "string",
+			options: null,
+			default: "",
+			label: "Name"
+		},
+		amount: {
+			type: "number",
+			options: null,
+			default: 0,
+			label: "Amount"
+		},
+		units: {
+			type: "select",
+			options: ["g", "kg", "mL", "L", "each"],
+			default: "g",
+			label: "Units"
+		},
+		use: {
+			type: "select",
+			options: ["boil", "flame-out", "dry-hop", "primary", "secondary", "bottle/keg"],
+			default: "boil",
+			label: "Use"
+		},
+		notes: {
+			type: "textarea",
+			options: null,
+			default: "",
+			label: "Additional notes"
+		}
+	},
 	step_mash: null,
 	step_fermentation: null,
 	step_misc: null,

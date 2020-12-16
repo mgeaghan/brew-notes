@@ -5,8 +5,8 @@ import schema from '../schema';
 const EditTextField = (props) => {
 	return (
 		<div id={props.id} className={props.className}>
-			<label for={props.field_name} id={props.field_name + "-label"}>{props.field_label}</label>
-			<input type="text" id={props.field_id} name={props.field_name} value={props.value} onChange={props.onChange}></input>
+			<label for={props.field_name} id={props.field_name + "-label"} className="field-label">{props.field_label}</label>
+			<input type="text" id={props.field_id} className={props.field_className} name={props.field_name} value={props.value} onChange={props.onChange}></input>
 		</div>
 	);
 };
@@ -14,38 +14,75 @@ const EditTextField = (props) => {
 const EditTextareaField = (props) => {
 	return (
 		<div id={props.id} className={props.className}>
-			<label for={props.field_name} id={props.field_name + "-label"}>{props.field_label}</label>
-			<textarea id={props.field_id} name={props.field_name} value={props.value} onChange={props.onChange} rows={props.rows} cols={props.cols}></textarea>
+			<label for={props.field_name} id={props.field_name + "-label"} className="field-label">{props.field_label}</label>
+			<textarea id={props.field_id} className={props.field_className} name={props.field_name} value={props.value} onChange={props.onChange}></textarea>
 		</div>
 	);
+};
+
+const EditNumberField = (props) => {
+	return (
+		<div id={props.id} className={props.className}>
+			<label for={props.field_name} id={props.field_name + "-label"} className="field-label">{props.field_label}</label>
+			<input type="number" id={props.field_id} className={props.field_className} name={props.field_name} value={props.value} onChange={props.onChange}></input>
+		</div>
+	);
+}
+
+const EditSelectionField = (props) => {
+	return (
+		<div id={props.id} className={props.className}>
+			<label for={props.field_name} id={props.field_name + "-label"} className="field-label">{props.field_label}</label>
+			<select id={props.field_id} className={props.field_className} name={props.field_name} onChange={props.onChange}>
+				{
+					props.options.map((x, i) => {
+						return (<option value={x} selected={props.hasOwnProperty("default") ? props.default === x : i === 0}>{x}</option>);
+					})
+				}
+			</select>
+		</div>
+	);
+};
+
+const fieldParams = (section, field) => {
+	return {
+		id: "brew-" + section + "-" + field + "-container",
+		className:  + section + "-field-container",
+		field_id: "brew-" + section + "-" + field,
+		field_className: "brew-" + section + "-field-container",
+		field_name: "brew-" + section + "-" + field,
+		field_label: schema[section][field].label + ": "
+	};
+};
+
+const EditField = (section, field, value, onChange) => {
+	let params = fieldParams(section, field);
+	params.value = value;
+	params.onChange = onChange(field);
+	return (() => {
+		switch(schema[section][field].type) {
+			case "string":
+				return EditTextField(params);
+			case "number":
+				return EditNumberField(params);
+			case "textarea":
+				return EditTextareaField(params);
+			case "select":
+				params.options = schema[section][field].options;
+				params.default = schema[section][field].default;
+				return EditSelectionField(params);
+			default:
+				return null;
+		}
+	})();
 };
 
 const EditBrewInfo = (props) => {
 	return (
 		<div id="brew-information" class="brew-information">
 			{Object.keys(schema.information).map(x => {
-				let params = {
-					id: "brew-" + x + "-div",
-					field_id: "brew-" + x,
-					field_name: "brew-" + x,
-					field_label: schema.information[x].label + ": ",
-					value: props.data.hasOwnProperty(x) ? props.data[x] : "",
-					onChange: props.onChange(x),
-					cols: props.hasOwnProperty("textarea_cols") ? props.textarea_cols : 80,
-					rows: props.hasOwnProperty("textarea_rows") ? props.textarea_rows : 10
-				};
-				return (() => {
-					switch(schema.information[x].type) {
-						case "string":
-							params.className = "brew-field";
-							return EditTextField(params);
-						case "textarea":
-							params.className = "brew-textarea-field";
-							return EditTextareaField(params);
-						default:
-							return null;
-					}
-				})();
+				let value = props.data.hasOwnProperty(x) ? props.data[x] : "";
+				return EditField("information", x, value, props.onChange);
 			})}
 		</div>
 	);
@@ -65,39 +102,43 @@ const EditRecipeItem = (props) => {
 		return name(field) + "-label"
 	};
 	return (
-		<div id={recipe_item_id} className={recipe_item_class}>
-			{Object.keys(schema[props.type])
-				.map((x, i) => {
-					return (
-						<div id={name(x) + "-wrapper"} className={"recipe-item-field-wrapper " + className(x) + "-wrapper"}>
-							<label for={name(x)} id={label(x)} className="recipe-item-field-label">{schema[props.type][x].label + ": "}</label>
-							{
-								(() => {
-									switch(schema[props.type][x].type) {
-										case "string":
-										case "number":
-											return (<input type={schema[props.type][x].type} id={name(x)} className={className(x)} name={name(x)} value={props.values.hasOwnProperty(x) ? props.values[x] : ""} onChange={props.onChange(x)}></input>);
-										case "select":
-											return (
-												<select id={name(x)} className={className(x)} name={name(x)} onChange={props.onChange(x)}>
-												{
-													schema[props.type][x].options
-														.map((y, j) => {
-															return (<option value={y} selected={props.values.hasOwnProperty(x) ? y === props.values[x] : j === 0}>{y}</option>);
-														})
-												}
-												</select>
-											);
-										default:
-											return null;
-									}
-								})()
-							}
-						</div>
-					);
-				})
-				.filter(x => x)
-			}
+		<div className="recipe-item-wrapper">
+			<div id={recipe_item_id} className={recipe_item_class}>
+				{Object.keys(schema[props.type])
+					.map((x, i) => {
+						return (
+							<div id={name(x) + "-wrapper"} className={"recipe-item-field-wrapper " + className(x) + "-wrapper"}>
+								<label for={name(x)} id={label(x)} className="recipe-item-field-label">{schema[props.type][x].label + ": "}</label>
+								{
+									(() => {
+										switch(schema[props.type][x].type) {
+											case "string":
+											case "number":
+												return (<input type={schema[props.type][x].type} id={name(x)} className={className(x)} name={name(x)} value={props.values.hasOwnProperty(x) ? props.values[x] : ""} onChange={props.onChange(x)}></input>);
+											case "select":
+												return (
+													<select id={name(x)} className={className(x)} name={name(x)} onChange={props.onChange(x)}>
+													{
+														schema[props.type][x].options
+															.map((y, j) => {
+																return (<option value={y} selected={props.values.hasOwnProperty(x) ? y === props.values[x] : j === 0}>{y}</option>);
+															})
+													}
+													</select>
+												);
+											case "textarea":
+												return (<textarea type={schema[props.type][x].type} id={name(x)} className={className(x)} name={name(x)} value={props.values.hasOwnProperty(x) ? props.values[x] : ""} onChange={props.onChange(x)}></textarea>);
+											default:
+												return null;
+										}
+									})()
+								}
+							</div>
+						);
+					})
+					.filter(x => x)
+				}
+			</div>
 			<RemItemButton onClick={props.handleRemove} />
 		</div>
 	);
@@ -141,7 +182,8 @@ class EditApp extends React.Component {
 			information: this._infoItem(),
 			fermentables: [this._recipeItem("fermentables")],
 			hops: [this._recipeItem("hops")],
-			yeast: [this._recipeItem("yeast")]
+			yeast: [this._recipeItem("yeast")],
+			misc: [{ingredient: "", amount: 0, units: "g", use: "boil", notes: ""}]
 		};
 		
 		this._handleChange = this._handleChange.bind(this);
@@ -239,9 +281,7 @@ class EditApp extends React.Component {
 				<form>
 					<EditBrewInfo
 						data={this.state.information}
-						onChange={this._handleChange}
-						textarea_cols={80}
-						textarea_rows={10} />
+						onChange={this._handleChange} />
 					<h3>Recipe</h3>
 					<EditRecipeItemList
 						type="fermentables"
@@ -264,6 +304,14 @@ class EditApp extends React.Component {
 						heading="Yeast"
 						data={this.state.yeast}
 						button_text="Add Yeast"
+						handleRecipeChange={this._handleRecipeChange}
+						handleAddRecipeItem={this._handleAddRecipeItem}
+						handleRemRecipeItem={this._handleRemRecipeItem} />
+					<EditRecipeItemList
+						type="misc"
+						heading="Miscellaneous"
+						data={this.state.misc}
+						button_text="Add Miscellaneous"
 						handleRecipeChange={this._handleRecipeChange}
 						handleAddRecipeItem={this._handleAddRecipeItem}
 						handleRemRecipeItem={this._handleRemRecipeItem} />

@@ -7,14 +7,24 @@ body {
 	border-radius: 5px;
 	padding: 5px;
 	margin: 5px;
+	max-width: 75vw;
+}
+
+.recipe-item-wrapper {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: nowrap;
+	border-bottom: 1px solid rgb(131, 131, 131);
+	margin-bottom: 10px;
 }
 
 .recipe-item {
 	margin-bottom: 10px;
 	display: flex;
+	min-height: 100%;
 	justify-content: flex-start;
 	align-content: space-between;
-	align-items: flex-end;
+	align-items: flex-start;
 	flex-wrap: wrap;
 }
 
@@ -24,15 +34,21 @@ body {
 	margin-top: 5px;
 }
 
+.recipe-misc-notes-wrapper {
+	flex-basis: 100%;
+}
+
 .recipe-item-field-label {
 	display: block;
 	padding-left: 1px;
 }
 
 .add-rem-item-button {
+	display: inline;
 	padding: 5px;
 	border-radius: 5px;
 	margin-left: 5px;
+	align-self: center;
 }
 
 .add-rem-item-button:hover {
@@ -47,6 +63,16 @@ body {
 	display: inline;
 	background-color: rgb(150, 111, 111);
 	color:rgb(227, 210, 210);
+}
+
+.rem-item-spacer {
+	height: 1px;
+}
+
+.rem-item-wrapper {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 }
 
 .add-item {
