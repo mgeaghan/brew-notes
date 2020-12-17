@@ -246,7 +246,15 @@ class EditApp extends React.Component {
 	}
 
 	_handleSave() {
-		return null;
+		let submitData = fetch('/api', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(this.state)
+		})
+			.then(response => response.json())
+			.then(data => console.log({request_status: 'OK', data: data}));
 	}
 
 	render() {
