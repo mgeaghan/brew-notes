@@ -12,10 +12,11 @@ body {
 
 .recipe-item-wrapper {
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-start;
 	flex-wrap: nowrap;
 	border-bottom: 1px solid rgb(131, 131, 131);
 	margin-bottom: 10px;
+	width: 100%;
 }
 
 .recipe-item {
@@ -26,6 +27,12 @@ body {
 	align-content: space-between;
 	align-items: flex-start;
 	flex-wrap: wrap;
+	width: 100%;
+}
+
+.recipe-item-idx {
+	align-self: center;
+	margin-right: 10px;
 }
 
 .field-container {
@@ -36,6 +43,11 @@ body {
 
 .textarea-field-container {
 	flex-basis: 100%;
+}
+
+.brew-section-field-container {
+	max-width: 95%;
+	min-width: 95%;
 }
 
 .field-label {
@@ -63,6 +75,7 @@ body {
 	display: inline;
 	background-color: rgb(150, 111, 111);
 	color:rgb(227, 210, 210);
+	/*margin-left: auto;*/
 }
 
 .rem-item-spacer {

@@ -49,9 +49,9 @@ const fieldParams = (section, field) => {
 		id: "brew-" + section + "-" + field + "-container",
 		className: "field-container brew-" + section + "-field-container",
 		field_id: "brew-" + section + "-" + field,
-		field_className: "brew-" + section + "-field-container",
+		field_className: "brew-section-field-container brew-" + section + "-field-container",
 		field_name: "brew-" + section + "-" + field,
-		field_label: schema[section][field].label + ": "
+		field_label: schema[section][field].label ? schema[section][field].label + ": " : null
 	};
 };
 
@@ -92,6 +92,7 @@ const EditBrewInfo = (props) => {
 const EditRecipeItem = (props) => {
 	return (
 		<div className="recipe-item-wrapper">
+			<span className="recipe-item-idx">{(props.idx + 1) + ". "}</span>
 			<div className="recipe-item">
 				{Object.keys(schema[props.type]).map((x, i) => {
 					let value = props.data.hasOwnProperty(x) ? props.data[x] : "";
@@ -143,7 +144,9 @@ class EditApp extends React.Component {
 			fermentables: [this._recipeItem("fermentables")],
 			hops: [this._recipeItem("hops")],
 			yeast: [this._recipeItem("yeast")],
-			misc: [{ingredient: "", amount: 0, units: "g", use: "boil", notes: ""}]
+			misc: [this._recipeItem("misc")],
+			step_mash: [this._recipeItem("step_mash")],
+			step_misc: [this._recipeItem("step_misc")]
 		};
 		
 		this._handleChange = this._handleChange.bind(this);
@@ -272,6 +275,22 @@ class EditApp extends React.Component {
 						heading="Miscellaneous"
 						data={this.state.misc}
 						button_text="Add Miscellaneous"
+						handleRecipeChange={this._handleRecipeChange}
+						handleAddRecipeItem={this._handleAddRecipeItem}
+						handleRemRecipeItem={this._handleRemRecipeItem} />
+					<EditRecipeItemList
+						type="step_mash"
+						heading="Mash Steps"
+						data={this.state.step_mash}
+						button_text="Add Step"
+						handleRecipeChange={this._handleRecipeChange}
+						handleAddRecipeItem={this._handleAddRecipeItem}
+						handleRemRecipeItem={this._handleRemRecipeItem} />
+					<EditRecipeItemList
+						type="step_misc"
+						heading="Additional Notes"
+						data={this.state.step_misc}
+						button_text="Add Note"
 						handleRecipeChange={this._handleRecipeChange}
 						handleAddRecipeItem={this._handleAddRecipeItem}
 						handleRemRecipeItem={this._handleRemRecipeItem} />

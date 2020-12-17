@@ -165,9 +165,34 @@ const schema = {
 			label: "Additional notes"
 		}
 	},
-	step_mash: null,
-	step_fermentation: null,
-	step_misc: null,
+	step_mash: {
+		type: {
+			type: "select",
+			options: ["infusion", "decoction"],
+			default: "infusion",
+			label: "Step type"
+		},
+		temperature: {
+			type: "number",
+			options: null,
+			default: 67,
+			label: "Temperature (C)"
+		},
+		time: {
+			type: "number",
+			options: null,
+			default: 60,
+			label: "Time (mins)"
+		},
+	},
+	step_misc: {
+		notes: {
+			type: "textarea",
+			options: null,
+			default: "",
+			label: null
+		}
+	}
 };
 
 export default schema;
