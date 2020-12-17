@@ -44,19 +44,19 @@ const EditSelectionField = (props) => {
 	);
 };
 
-const fieldParams = (section, field) => {
+const fieldParams = (section, field, idx) => {
 	return {
-		id: "brew-" + section + "-" + field + "-container",
+		id: "brew-" + section + "-" + field + "-" + idx + "-container",
 		className: "field-container brew-" + section + "-field-container",
-		field_id: "brew-" + section + "-" + field,
+		field_id: "brew-" + section + "-" + field + "-" + idx,
 		field_className: "brew-section-field-container brew-" + section + "-field-container",
-		field_name: "brew-" + section + "-" + field,
+		field_name: "brew-" + section + "-" + field + "-" + idx,
 		field_label: schema[section][field].label ? schema[section][field].label + ": " : null
 	};
 };
 
-const EditField = (section, field, value, onChange) => {
-	let params = fieldParams(section, field);
+const EditField = (section, field, value, onChange, idx = 0) => {
+	let params = fieldParams(section, field, idx);
 	params.value = value;
 	params.onChange = onChange(field);
 	return (() => {
@@ -96,7 +96,7 @@ const EditRecipeItem = (props) => {
 			<div className="recipe-item">
 				{Object.keys(schema[props.type]).map((x, i) => {
 					let value = props.data.hasOwnProperty(x) ? props.data[x] : "";
-					return EditField(props.type, x, value, props.onChange)
+					return EditField(props.type, x, value, props.onChange, props.idx)
 				}).filter(x => x)
 				}
 			</div>
@@ -253,11 +253,12 @@ class EditApp extends React.Component {
 		return (
 			<div id="editor">
 				<form>
+					<h1>Edit brew</h1>
 					<EditBrewInfo
 						data={this.state.information}
 						onChange={this._handleChange} />
-					<h3>Recipe</h3>
 					<SaveButton onClick={this._handleSave} />
+					<h2>Recipe</h2>
 					<EditRecipeItemList
 						type="fermentables"
 						heading="Fermentables"
