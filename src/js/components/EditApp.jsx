@@ -134,6 +134,12 @@ const RemItemButton = (props) => {
 	);
 }
 
+const SaveButton = (props) => {
+	return (
+		<div className="save-button" onClick={props.onClick}>Save</div>
+	);
+};
+
 class EditApp extends React.Component {
 	constructor(props) {
 		super(props);
@@ -155,6 +161,7 @@ class EditApp extends React.Component {
 		this._handleRemRecipeItem = this._handleRemRecipeItem.bind(this);
 		this._recipeItem = this._recipeItem.bind(this);
 		this._infoItem = this._infoItem.bind(this);
+		this._handleSave = this._handleSave.bind(this);
 	}
 
 	_infoItem(data = {}) {
@@ -238,6 +245,10 @@ class EditApp extends React.Component {
 		}
 	}
 
+	_handleSave() {
+		return null;
+	}
+
 	render() {
 		return (
 			<div id="editor">
@@ -246,6 +257,7 @@ class EditApp extends React.Component {
 						data={this.state.information}
 						onChange={this._handleChange} />
 					<h3>Recipe</h3>
+					<SaveButton onClick={this._handleSave} />
 					<EditRecipeItemList
 						type="fermentables"
 						heading="Fermentables"
@@ -294,6 +306,7 @@ class EditApp extends React.Component {
 						handleRecipeChange={this._handleRecipeChange}
 						handleAddRecipeItem={this._handleAddRecipeItem}
 						handleRemRecipeItem={this._handleRemRecipeItem} />
+					<SaveButton onClick={this._handleSave} />
 				</form>
 			</div>
 		);
