@@ -166,7 +166,7 @@ const schema = {
 		}
 	},
 	step_mash: {
-		type: {
+		step_type: {
 			type: "select",
 			options: ["infusion", "decoction"],
 			default: "infusion",
