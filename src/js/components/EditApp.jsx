@@ -146,6 +146,7 @@ class EditApp extends React.Component {
 
 		
 		this.state = {
+			id: null,
 			information: this._infoItem(),
 			fermentables: [this._recipeItem("fermentables")],
 			hops: [this._recipeItem("hops")],
@@ -246,7 +247,7 @@ class EditApp extends React.Component {
 	}
 
 	_handleSave() {
-		let submitData = fetch('/api', {
+		let submitData = fetch('/api/save', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -254,7 +255,36 @@ class EditApp extends React.Component {
 			body: JSON.stringify(this.state)
 		})
 			.then(response => response.json())
-			.then(data => console.log({request_status: 'OK', data: data}));
+			.then(data => {
+				if (!this.state.id) {
+					this.setState({
+						id: data.data._id
+					});
+				}
+				console.log(data)
+			});
+	}
+
+	_handleRetrieve(id_string) {
+		let getData = fetch('/api/fetch?id=' + id_string, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					this.setState(data.data);
+				}
+				console.log(data);
+			});
+	}
+
+	componentDidMount() {
+		const urlParams = new URLSearchParams(window.location.search);
+		const id_string = urlParams.get('id');
+		if (id_string) this._handleRetrieve(id_string);
 	}
 
 	render() {

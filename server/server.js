@@ -49,6 +49,7 @@ const step_misc = {
 };
 
 const brewSchema = new mongoose.Schema({
+	id: String,
 	information: information,
 	fermentables: [fermentables],
 	hops: [hops],
@@ -77,17 +78,97 @@ app.get('/edit', (req, res) => {
 	res.sendFile(dist + '/edit.html');
 });
 
-app.post('/api', (req, res) => {
+let Brew = mongoose.model("Brew", brewSchema);
+
+app.get('/api/fetch', (req, res) => {
+	if (!req.query.id) {
+		let ret = {
+			success: false,
+			message: "No ID supplied.",
+			data: null
+		};
+		res.send(ret);
+	} else {
+		Brew.findById(req.query.id, (err, data) => {
+			if (err) {
+				console.log("ERROR: could not retrieve data.");
+				console.log("ID: " + req.query.id);
+				console.log("Data:");
+				let ret = {
+					success: false,
+					message: "Invalid ID supplied.",
+					data: null
+				};
+				res.send(ret);
+			} else {
+				console.log("SUCCESS: retrieved ID: " + req.query.id);
+				console.log("Data:");
+				console.log(data);
+				let ret = {
+					success: true,
+					message: "Data retrieved.",
+					data: data
+				};
+				res.send(ret);
+			}
+		});
+	}
+});
+
+app.post('/api/save', (req, res) => {
 	console.log(req.body);
-	let Brew = mongoose.model("Brew", brewSchema);
-	let brew = new Brew(req.body);
-	brew.save((err, data) => {
-		if (err) return console.error(err);
-		console.log("saved data: ");
-		console.log(data);
-	})
-	res.send(req.body);
-})
+	if (!req.body.id) {
+		let brew = new Brew(req.body);
+		brew.save((err, data) => {
+			if (err) {
+				console.log("ERROR: could not save data.")
+				let ret = {
+					success: false,
+					message: err,
+					data: null
+				};
+				res.send(ret);
+			} else {
+				console.log("Saved new data.");
+				console.log("New ID: " + data._id);
+				console.log("Data:")
+				console.log(data);
+				let ret = {
+					success: true,
+					message: "Data saved",
+					data: data
+				};
+				res.send(ret);
+			}	
+		})
+	} else {
+		Brew.findByIdAndUpdate(req.body.id, req.body, (err, data) => {
+			if (err) {
+				console.log("ERROR: could not update data.");
+				console.log("ID: " + req.body.id);
+				console.log("Data:");
+				console.log(req.body);
+				let ret = {
+					success: false,
+					message: err,
+					data: null
+				};
+				res.send(ret);
+			} else {
+				console.log("Updating data.");
+				console.log("ID: " + req.body.id);
+				console.log("Data:");
+				console.log(data);
+				let ret = {
+					success: true,
+					message: "Data saved",
+					data: data
+				};
+				res.send(ret);
+			}
+		});
+	}
+});
 
 const server = app.listen(9000, () => {
 	let port = server.address().port;
