@@ -1,86 +1,112 @@
 'use strict';
-require('dotenv').config({path: './mongodb.env'});
-const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true});
 
-const information = {
-	name: String,
-	style: String,
-	description: String
-};
-const fermentables = {
-	ingredient: String,
-	amount: Number,
-	units: String,
-	ppg: Number,
-	colour: Number,
-	colour_units: String,
-	use: String
-};
-const hops = {
-	ingredient: String,
-	amount: Number,
-	units: String,
-	use: String,
-	time: Number,
-	aa: Number,
-	ibu: Number
-};
-const yeast = {
-	name: String,
-	amount: Number,
-	units: String,
-	attenuation: Number
-};
-const misc = {
-	ingredient: String,
-	amount: Number,
-	units: String,
-	use: String,
-	notes: String
-};
-const step_mash = {
-	step_type: String,
-	temperature: Number,
-	time: Number
-};
-const step_misc = {
-	notes: String
-};
-
-const brewSchema = new mongoose.Schema({
-	id: String,
-	information: information,
-	fermentables: [fermentables],
-	hops: [hops],
-	yeast: [yeast],
-	misc: [misc],
-	step_mash: [step_mash],
-	step_misc: [step_misc]
+// Express setup
+const express = require('express');
+const app = express();
+const path = require('path');
+const dotenv = require('dotenv').config();
+const bodyParser = require('body-parser');
+const expressSession = require('express-session')({
+	secret: process.env.SECRET,
+	resave: false,
+	saveUninitialized: false
 });
 
-const path = require('path');
-const express = require('express');
-const bodyParser = require('body-parser');
-const app = express();
-
 const dist = path.resolve(__dirname + "/../dist");
-
 app.use('/static', express.static(dist + '/public'));
-let ue = bodyParser.json();
-app.use(ue);
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(expressSession);
+
+// Passport setup
+const passport = require('passport');
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Mongoose setup
+const mongoose = require('mongoose');
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true});
+const Brew = require('./schema/brew_schema');
+const UserDetails = require('./schema/user_schema');
+// let Brew = mongoose.model("Brew", brewSchema);
+// const passportLocalMongoose = require('passport-local-mongoose');
+
+// Passport Local Authentication
+passport.use(UserDetails.createStrategy());
+passport.serializeUser(UserDetails.serializeUser());
+passport.deserializeUser(UserDetails.deserializeUser());
+
+// Middleware
+const connectEnsureLogin = require('connect-ensure-login');
+const redirectIfLoggedIn = (route) => {
+	return (req, res, next) => {
+		if (req.user) {
+			return res.redirect(route);
+		} else {
+			return next();
+		}
+	};
+};
+
+// Routes
 app.get('/', (req, res) => {
 	res.sendFile(dist + '/index.html');
 });
 
-app.get('/edit', (req, res) => {
+app.get('/login', (req, res) => {
+	res.sendFile(dist + '/login.html');
+})
+
+app.post('/login', (req, res, next) => {
+	console.log(req.body);
+	passport.authenticate('local', (err, user, info) => {
+		if (err) {
+			return next(err);
+		}
+
+		if (!user) {
+			return res.redirect('/login?info=' + info);
+		}
+
+		req.login(user, (err) => {
+			if (err) {
+				return next(err);
+			}
+
+			return res.redirect('/');
+		});
+	})(req, res, next);
+});
+
+app.get('/register', redirectIfLoggedIn('/login'), (req, res) => {
+	res.sendFile(dist + '/register.html');
+});
+
+app.post('/register', (req, res) => {
+	console.log(req.body);
+	UserDetails.register({
+		username: req.body.username,
+		active: false
+	}, req.body.password, (err, user) => {
+		if (err) {
+			return res.redirect('/register?info=' + err.name + ": " + err.message);
+		}
+
+		return res.redirect('/login');
+	});
+});
+
+app.post('/logout', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
+	req.logout();
+	return res.redirect('/');
+});
+
+app.get('/edit', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	res.sendFile(dist + '/edit.html');
 });
 
-let Brew = mongoose.model("Brew", brewSchema);
-
-app.get('/api/fetch', (req, res) => {
+app.get('/api/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	if (!req.query.id) {
 		let ret = {
 			success: false,
@@ -115,7 +141,7 @@ app.get('/api/fetch', (req, res) => {
 	}
 });
 
-app.post('/api/save', (req, res) => {
+app.post('/api/save', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	console.log(req.body);
 	if (!req.body.id) {
 		let brew = new Brew(req.body);
@@ -170,7 +196,8 @@ app.post('/api/save', (req, res) => {
 	}
 });
 
-const server = app.listen(9000, () => {
-	let port = server.address().port;
+// Listen
+const port = process.env.PORT || 9000;
+const server = app.listen(port || 9000, () => {
 	console.log(`Server is running at http://localhost:${port}`);
 });
