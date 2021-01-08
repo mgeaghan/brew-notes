@@ -146,7 +146,8 @@ class EditApp extends React.Component {
 
 		
 		this.state = {
-			id: null,
+			user_id: null,
+			private: false,
 			information: this._infoItem(),
 			fermentables: [this._recipeItem("fermentables")],
 			hops: [this._recipeItem("hops")],
@@ -256,11 +257,6 @@ class EditApp extends React.Component {
 		})
 			.then(response => response.json())
 			.then(data => {
-				if (!this.state.id) {
-					this.setState({
-						id: data.data._id
-					});
-				}
 				console.log(data)
 			});
 	}

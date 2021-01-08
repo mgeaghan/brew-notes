@@ -26,7 +26,7 @@ app.use(passport.session());
 
 // Mongoose setup
 const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 const Brew = require('./schema/brew_schema');
 const UserDetails = require('./schema/user_schema');
 // let Brew = mongoose.model("Brew", brewSchema);
@@ -59,7 +59,6 @@ app.get('/login', (req, res) => {
 })
 
 app.post('/login', (req, res, next) => {
-	console.log(req.body);
 	passport.authenticate('local', (err, user, info) => {
 		if (err) {
 			return next(err);
@@ -84,7 +83,6 @@ app.get('/register', redirectIfLoggedIn('/login'), (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-	console.log(req.body);
 	UserDetails.register({
 		username: req.body.username,
 		active: false
@@ -107,6 +105,7 @@ app.get('/edit', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 });
 
 app.get('/api/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
+	console.log(req.user);
 	if (!req.query.id) {
 		let ret = {
 			success: false,
@@ -126,7 +125,7 @@ app.get('/api/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 					data: null
 				};
 				res.send(ret);
-			} else {
+			} else if (!req.body.private || req.body.user_id === req.user._id) {
 				console.log("SUCCESS: retrieved ID: " + req.query.id);
 				console.log("Data:");
 				console.log(data);
@@ -136,15 +135,29 @@ app.get('/api/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 					data: data
 				};
 				res.send(ret);
+			} else {
+				console.log("ERROR: unauthorised access attempt.");
+				console.log("ID: " + req.query.id);
+				console.log("Data:");
+				let ret = {
+					success: false,
+					message: "Unauthorised access attempt.",
+					data: null
+				};
+				res.send(ret);
 			}
 		});
 	}
 });
 
 app.post('/api/save', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
-	console.log(req.body);
-	if (!req.body.id) {
-		let brew = new Brew(req.body);
+	let new_data = Object.assign({}, req.body);
+	new_data.user_id = req.user._id;
+	if (new_data.hasOwnProperty("_id")) {
+		delete new_data._id;
+	}
+	if (!req.body.hasOwnProperty("_id") || req.body.user_id !== req.user._id) {
+		let brew = new Brew(new_data);
 		brew.save((err, data) => {
 			if (err) {
 				console.log("ERROR: could not save data.")
@@ -168,10 +181,10 @@ app.post('/api/save', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 			}	
 		})
 	} else {
-		Brew.findByIdAndUpdate(req.body.id, req.body, (err, data) => {
+		Brew.findByIdAndUpdate(req.body._id, new_data, (err, data) => {
 			if (err) {
 				console.log("ERROR: could not update data.");
-				console.log("ID: " + req.body.id);
+				console.log("ID: " + req.body._id);
 				console.log("Data:");
 				console.log(req.body);
 				let ret = {
@@ -182,7 +195,7 @@ app.post('/api/save', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 				res.send(ret);
 			} else {
 				console.log("Updating data.");
-				console.log("ID: " + req.body.id);
+				console.log("ID: " + req.body._id);
 				console.log("Data:");
 				console.log(data);
 				let ret = {
@@ -198,6 +211,6 @@ app.post('/api/save', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 
 // Listen
 const port = process.env.PORT || 9000;
-const server = app.listen(port || 9000, () => {
+const server = app.listen(port, () => {
 	console.log(`Server is running at http://localhost:${port}`);
 });
