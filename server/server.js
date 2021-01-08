@@ -186,7 +186,7 @@ app.post('/api/save', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 				console.log("ERROR: could not update data.");
 				console.log("ID: " + req.body._id);
 				console.log("Data:");
-				console.log(req.body);
+				console.log(new_data);
 				let ret = {
 					success: false,
 					message: err,
