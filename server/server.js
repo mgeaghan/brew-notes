@@ -156,7 +156,7 @@ app.post('/api/save', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 	if (new_data.hasOwnProperty("_id")) {
 		delete new_data._id;
 	}
-	if (!req.body.hasOwnProperty("_id") || req.body.user_id !== req.user._id) {
+	if ((!req.body.hasOwnProperty("_id")) || (req.body.user_id != req.user._id)) {
 		let brew = new Brew(new_data);
 		brew.save((err, data) => {
 			if (err) {
