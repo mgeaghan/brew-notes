@@ -209,6 +209,42 @@ app.post('/api/save', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 	}
 });
 
+app.get('/api/delete', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
+	console.log(req.user);
+	if (!req.query.id) {
+		let ret = {
+			success: false,
+			message: "No ID supplied.",
+			data: null
+		};
+		res.send(ret);
+	} else {
+		Brew.deleteOne({ _id: req.query.id, user_id: req.user._id }, (err, data) => {
+			if (err) {
+				console.log("ERROR: could not retrieve data or unauthorised access attempted.");
+				console.log("ID: " + req.query.id);
+				console.log("Data:");
+				let ret = {
+					success: false,
+					message: "Invalid ID supplied or unauthorised access attempted.",
+					data: null
+				};
+				res.send(ret);
+			} else {
+				console.log("SUCCESS: deleted ID: " + req.query.id);
+				console.log("Data:");
+				console.log(data);
+				let ret = {
+					success: true,
+					message: "Data successfully deleted.",
+					data: data
+				};
+				res.send(ret);
+			}
+		});
+	}
+});
+
 // Listen
 const port = process.env.PORT || 9000;
 const server = app.listen(port, () => {
