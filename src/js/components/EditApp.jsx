@@ -136,7 +136,13 @@ const RemItemButton = (props) => {
 
 const SaveButton = (props) => {
 	return (
-		<div className="save-button" onClick={props.onClick}>Save</div>
+		<div className="save-button save-delete-button" onClick={props.onClick}>Save</div>
+	);
+};
+
+const DeleteButton = (props) => {
+	return (
+		<div className="delete-button save-delete-button" onClick={props.onClick}>Delete</div>
 	);
 };
 
@@ -164,6 +170,7 @@ class EditApp extends React.Component {
 		this._recipeItem = this._recipeItem.bind(this);
 		this._infoItem = this._infoItem.bind(this);
 		this._handleSave = this._handleSave.bind(this);
+		this._handleDelete = this._handleDelete.bind(this);
 	}
 
 	_infoItem(data = {}) {
@@ -261,6 +268,19 @@ class EditApp extends React.Component {
 			});
 	}
 
+	_handleDelete(id_string) {
+		let deleteData = fetch('/api/delete?id=' + id_string, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+			.then(response => response.json())
+			.then(data => {
+				console.log(data)
+			});
+	}
+
 	_handleRetrieve(id_string) {
 		let getData = fetch('/api/fetch?id=' + id_string, {
 			method: 'GET',
@@ -292,6 +312,7 @@ class EditApp extends React.Component {
 						data={this.state.information}
 						onChange={this._handleChange} />
 					<SaveButton onClick={this._handleSave} />
+					<DeleteButton onClick={this._handleDelete} />
 					<h2>Recipe</h2>
 					<EditRecipeItemList
 						type="fermentables"
@@ -342,6 +363,7 @@ class EditApp extends React.Component {
 						handleAddRecipeItem={this._handleAddRecipeItem}
 						handleRemRecipeItem={this._handleRemRecipeItem} />
 					<SaveButton onClick={this._handleSave} />
+					<DeleteButton onClick={this._handleDelete} />
 				</form>
 			</div>
 		);
