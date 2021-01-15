@@ -125,7 +125,7 @@ app.get('/api/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 					data: null
 				};
 				res.send(ret);
-			} else if (!req.body.private || req.body.user_id === req.user._id) {
+			} else if (!data.private || data.user_id === req.user._id) {
 				console.log("SUCCESS: retrieved ID: " + req.query.id);
 				console.log("Data:");
 				console.log(data);
