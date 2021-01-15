@@ -125,6 +125,16 @@ app.get('/api/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 					data: null
 				};
 				res.send(ret);
+			} else if (!data || !data.toObject().hasOwnProperty("private")) {
+				console.log("ERROR: invalid data retrieved.");
+				console.log("ID: " + req.query.id);
+				console.log("Data:");
+				let ret = {
+					success: false,
+					message: "Invalid data retrieved.",
+					data: null
+				};
+				res.send(ret);
 			} else if (!data.private || data.user_id === req.user._id) {
 				console.log("SUCCESS: retrieved ID: " + req.query.id);
 				console.log("Data:");
