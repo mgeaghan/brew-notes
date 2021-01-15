@@ -100,6 +100,10 @@ app.post('/logout', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	return res.redirect('/');
 });
 
+app.get('/list', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
+	res.sendFile(dist + '/list.html');
+});
+
 app.get('/edit', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	res.sendFile(dist + '/edit.html');
 });
