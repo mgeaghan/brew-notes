@@ -4,6 +4,7 @@ module.exports = {
 	entry: {
 		main: './src/js/main.js',
 		edit: './src/js/edit.js',
+		list: './src/js/list.js',
 	},
 	output: {
 		filename: '[name].js',
