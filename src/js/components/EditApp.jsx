@@ -1,5 +1,6 @@
 import React from 'react';
 import schema from '../schema';
+import update from 'immutability-helper';
 
 
 const EditTextField = (props) => {
@@ -152,15 +153,18 @@ class EditApp extends React.Component {
 
 		
 		this.state = {
-			user_id: null,
-			private: false,
-			information: this._infoItem(),
-			fermentables: [this._recipeItem("fermentables")],
-			hops: [this._recipeItem("hops")],
-			yeast: [this._recipeItem("yeast")],
-			misc: [this._recipeItem("misc")],
-			step_mash: [this._recipeItem("step_mash")],
-			step_misc: [this._recipeItem("step_misc")]
+			id: null,
+			data: {
+				user_id: null,
+				private: false,
+				information: this._infoItem(),
+				fermentables: [this._recipeItem("fermentables")],
+				hops: [this._recipeItem("hops")],
+				yeast: [this._recipeItem("yeast")],
+				misc: [this._recipeItem("misc")],
+				step_mash: [this._recipeItem("step_mash")],
+				step_misc: [this._recipeItem("step_misc")]
+			},
 		};
 		
 		this._handleChange = this._handleChange.bind(this);
@@ -171,6 +175,7 @@ class EditApp extends React.Component {
 		this._infoItem = this._infoItem.bind(this);
 		this._handleSave = this._handleSave.bind(this);
 		this._handleDelete = this._handleDelete.bind(this);
+		this._handleRetrieve = this._handleRetrieve.bind(this);
 	}
 
 	_infoItem(data = {}) {
@@ -213,8 +218,13 @@ class EditApp extends React.Component {
 
 	_handleChange(field) {
 		return (e) => {
-			let update_state = {information: Object.assign({}, this.state.information)};
-			update_state.information[field] = e.target.value;
+			let update_state = update(this.state, {
+				data: {
+					information: {
+						[field]: { $set: e.target.value }
+					}
+				}
+			});
 			this.setState(update_state);
 		};
 	}
@@ -222,9 +232,15 @@ class EditApp extends React.Component {
 	_handleRecipeChange(type, idx) {
 		return (field) => {
 			return (e) => {
-				let update_state = {};
-				update_state[type] = [...this.state[type]];
-				update_state[type][idx][field] = e.target.value;
+				let update_state = update(this.state, {
+					data: {
+						[type]: {
+							[idx]: {
+								[field]: { $set: e.target.value }
+							}
+						}
+					}
+				});
 				this.setState(update_state);
 			};
 		};
@@ -232,24 +248,22 @@ class EditApp extends React.Component {
 
 	_handleAddRecipeItem(type) {
 		return () => {
-			let update_state = {};
-			update_state[type] = [...this.state[type]];
-			update_state[type].push(this._recipeItem(type));
+			let update_state = update(this.state, {
+				data: {
+					[type]: { $push: [this._recipeItem(type)] }
+				}
+			});
 			this.setState(update_state);
 		};
 	}
 
 	_handleRemRecipeItem(type, idx) {
 		return () => {
-			let update_state = {};
-			let update_array = [...this.state[type]];
-			if (idx === (update_array.length - 1)) {
-				update_state[type] = update_array.slice(0, idx);
-			} else if (idx === 0) {
-				update_state[type] = update_array.slice(1);
-			} else {
-				update_state[type] = update_array.slice(0, idx).concat(update_array.slice(idx + 1));
-			}
+			let update_state = update(this.state, {
+				data: {
+					[type]: { $splice: [[idx, 1]] }
+				}
+			});
 			this.setState(update_state);
 		}
 	}
@@ -268,17 +282,20 @@ class EditApp extends React.Component {
 			});
 	}
 
-	_handleDelete(id_string) {
-		let deleteData = fetch('/api/delete?id=' + id_string, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		})
-			.then(response => response.json())
-			.then(data => {
-				console.log(data)
-			});
+	_handleDelete() {
+		if (this.state.id) {
+			let deleteData = fetch('/api/delete', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ id: this.state.id })
+			})
+				.then(response => response.json())
+				.then(data => {
+					console.log(data)
+				});
+		}
 	}
 
 	_handleRetrieve(id_string) {
@@ -291,7 +308,7 @@ class EditApp extends React.Component {
 			.then(response => response.json())
 			.then(data => {
 				if (data.success) {
-					this.setState(data.data);
+					this.setState({ id: data.id, data: data.data });
 				}
 				console.log(data);
 			});
@@ -309,7 +326,7 @@ class EditApp extends React.Component {
 				<form>
 					<h1>Edit brew</h1>
 					<EditBrewInfo
-						data={this.state.information}
+						data={this.state.data.information}
 						onChange={this._handleChange} />
 					<SaveButton onClick={this._handleSave} />
 					<DeleteButton onClick={this._handleDelete} />
@@ -317,7 +334,7 @@ class EditApp extends React.Component {
 					<EditRecipeItemList
 						type="fermentables"
 						heading="Fermentables"
-						data={this.state.fermentables}
+						data={this.state.data.fermentables}
 						button_text="Add Fermentable"
 						handleRecipeChange={this._handleRecipeChange}
 						handleAddRecipeItem={this._handleAddRecipeItem}
@@ -325,7 +342,7 @@ class EditApp extends React.Component {
 					<EditRecipeItemList
 						type="hops"
 						heading="Hops"
-						data={this.state.hops}
+						data={this.state.data.hops}
 						button_text="Add Hops"
 						handleRecipeChange={this._handleRecipeChange}
 						handleAddRecipeItem={this._handleAddRecipeItem}
@@ -333,7 +350,7 @@ class EditApp extends React.Component {
 					<EditRecipeItemList
 						type="yeast"
 						heading="Yeast"
-						data={this.state.yeast}
+						data={this.state.data.yeast}
 						button_text="Add Yeast"
 						handleRecipeChange={this._handleRecipeChange}
 						handleAddRecipeItem={this._handleAddRecipeItem}
@@ -341,7 +358,7 @@ class EditApp extends React.Component {
 					<EditRecipeItemList
 						type="misc"
 						heading="Miscellaneous"
-						data={this.state.misc}
+						data={this.state.data.misc}
 						button_text="Add Miscellaneous"
 						handleRecipeChange={this._handleRecipeChange}
 						handleAddRecipeItem={this._handleAddRecipeItem}
@@ -349,7 +366,7 @@ class EditApp extends React.Component {
 					<EditRecipeItemList
 						type="step_mash"
 						heading="Mash Steps"
-						data={this.state.step_mash}
+						data={this.state.data.step_mash}
 						button_text="Add Step"
 						handleRecipeChange={this._handleRecipeChange}
 						handleAddRecipeItem={this._handleAddRecipeItem}
@@ -357,7 +374,7 @@ class EditApp extends React.Component {
 					<EditRecipeItemList
 						type="step_misc"
 						heading="Additional Notes"
-						data={this.state.step_misc}
+						data={this.state.data.step_misc}
 						button_text="Add Note"
 						handleRecipeChange={this._handleRecipeChange}
 						handleAddRecipeItem={this._handleAddRecipeItem}

@@ -105,11 +105,12 @@ app.get('/edit', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 });
 
 app.get('/api/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
-	console.log(req.user);
 	if (!req.query.id) {
+		console.log("ERROR: no ID supplied.");
 		let ret = {
 			success: false,
 			message: "No ID supplied.",
+			id: null,
 			data: null
 		};
 		res.send(ret);
@@ -118,40 +119,47 @@ app.get('/api/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 			if (err) {
 				console.log("ERROR: could not retrieve data.");
 				console.log("ID: " + req.query.id);
-				console.log("Data:");
 				let ret = {
 					success: false,
 					message: "Invalid ID supplied.",
+					id: null,
 					data: null
 				};
 				res.send(ret);
-			} else if (!data || !data.toObject().hasOwnProperty("private")) {
+			} else if (!data || !data.data.toObject().hasOwnProperty("private")) {
 				console.log("ERROR: invalid data retrieved.");
 				console.log("ID: " + req.query.id);
 				console.log("Data:");
+				console.log(data);
 				let ret = {
 					success: false,
 					message: "Invalid data retrieved.",
+					id: null,
 					data: null
 				};
 				res.send(ret);
-			} else if (!data.private || data.user_id === req.user._id) {
-				console.log("SUCCESS: retrieved ID: " + req.query.id);
+			} else if (!data.data.private || data.data.user_id == req.user._id) {
+				console.log("SUCCESS: retrieved data.");
+				console.log("ID: " + req.query.id);
 				console.log("Data:");
 				console.log(data);
 				let ret = {
 					success: true,
 					message: "Data retrieved.",
-					data: data
+					id: data._id,
+					data: data.data
 				};
 				res.send(ret);
 			} else {
 				console.log("ERROR: unauthorised access attempt.");
 				console.log("ID: " + req.query.id);
-				console.log("Data:");
+				console.log("Requesting user ID: " + req.user._id);
+				console.log("Owner user ID: " + data.data.user_id);
+				console.log("Privacy: " + data.data.private);
 				let ret = {
 					success: false,
 					message: "Unauthorised access attempt.",
+					id: null,
 					data: null
 				};
 				res.send(ret);
@@ -162,56 +170,58 @@ app.get('/api/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 
 app.post('/api/save', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	let new_data = Object.assign({}, req.body);
-	new_data.user_id = req.user._id;
-	if (new_data.hasOwnProperty("_id")) {
-		delete new_data._id;
-	}
-	if ((!req.body.hasOwnProperty("_id")) || (req.body.user_id != req.user._id)) {
+	new_data.data.user_id = req.user._id;
+	if ((!req.body.hasOwnProperty("id")) || (!req.body.id) || (req.body.data.user_id != req.user._id)) {
 		let brew = new Brew(new_data);
 		brew.save((err, data) => {
 			if (err) {
-				console.log("ERROR: could not save data.")
+				console.log("ERROR: could not save data.");
+				console.log("ID: " + req.body.id);
 				let ret = {
 					success: false,
 					message: err,
+					id: null,
 					data: null
 				};
 				res.send(ret);
 			} else {
-				console.log("Saved new data.");
+				console.log("SUCCESS: saved new data.");
 				console.log("New ID: " + data._id);
 				console.log("Data:")
 				console.log(data);
 				let ret = {
 					success: true,
 					message: "Data saved",
-					data: data
+					id: data._id,
+					data: data.data
 				};
 				res.send(ret);
 			}	
 		})
 	} else {
-		Brew.findByIdAndUpdate(req.body._id, new_data, (err, data) => {
+		Brew.findByIdAndUpdate(req.body.id, new_data, (err, data) => {
 			if (err) {
 				console.log("ERROR: could not update data.");
-				console.log("ID: " + req.body._id);
+				console.log("ID: " + req.body.id);
 				console.log("Data:");
 				console.log(new_data);
 				let ret = {
 					success: false,
 					message: err,
+					id: null,
 					data: null
 				};
 				res.send(ret);
 			} else {
-				console.log("Updating data.");
-				console.log("ID: " + req.body._id);
+				console.log("SUCCESS: updating data.");
+				console.log("ID: " + req.body.id);
 				console.log("Data:");
 				console.log(data);
 				let ret = {
 					success: true,
-					message: "Data saved",
-					data: data
+					message: "Data updated",
+					id: data._id,
+					data: data.data
 				};
 				res.send(ret);
 			}
@@ -219,35 +229,50 @@ app.post('/api/save', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 	}
 });
 
-app.get('/api/delete', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
-	console.log(req.user);
-	if (!req.query.id) {
+app.post('/api/delete', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
+	if (!req.body.id) {
+		console.log("ERROR: no ID supplied.");
 		let ret = {
 			success: false,
 			message: "No ID supplied.",
+			id: null,
 			data: null
 		};
 		res.send(ret);
 	} else {
-		Brew.deleteOne({ _id: req.query.id, user_id: req.user._id }, (err, data) => {
+		Brew.findOneAndDelete({ _id: req.body.id, 'data.user_id': req.user._id }, (err, data) => {
 			if (err) {
 				console.log("ERROR: could not retrieve data or unauthorised access attempted.");
-				console.log("ID: " + req.query.id);
-				console.log("Data:");
+				console.log("ID: " + req.body.id);
+				console.log("User ID: " + req.user._id);
 				let ret = {
 					success: false,
 					message: "Invalid ID supplied or unauthorised access attempted.",
+					id: null,
+					data: null
+				};
+				res.send(ret);
+			} else if (!data) {
+				console.log("ERROR: could not retrieve data.");
+				console.log("ID: " + req.body.id);
+				let ret = {
+					success: true,
+					message: "Invalid ID supplied.",
+					id: req.body.id,
 					data: null
 				};
 				res.send(ret);
 			} else {
-				console.log("SUCCESS: deleted ID: " + req.query.id);
+				console.log("SUCCESS: deleted data");
+				console.log("ID: " + req.body.id);
+				console.log("User ID: " + req.user._id);
 				console.log("Data:");
 				console.log(data);
 				let ret = {
 					success: true,
 					message: "Data successfully deleted.",
-					data: data
+					id: req.body.id,
+					data: data.hasOwnProperty("data") ? data.data : null
 				};
 				res.send(ret);
 			}

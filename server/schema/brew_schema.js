@@ -46,15 +46,17 @@ const step_misc = {
 };
 
 const brewSchema = new mongoose.Schema({
-	user_id: String,
-	private: Boolean,
-	information: information,
-	fermentables: [fermentables],
-	hops: [hops],
-	yeast: [yeast],
-	misc: [misc],
-	step_mash: [step_mash],
-	step_misc: [step_misc]
+	data: {
+		user_id: String,
+		private: Boolean,
+		information: information,
+		fermentables: [fermentables],
+		hops: [hops],
+		yeast: [yeast],
+		misc: [misc],
+		step_mash: [step_mash],
+		step_misc: [step_misc]
+	}
 });
 
 const Brew = mongoose.model("Brew", brewSchema);
