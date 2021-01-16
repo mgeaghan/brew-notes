@@ -164,7 +164,7 @@ class EditApp extends React.Component {
 				misc: [this._recipeItem("misc")],
 				step_mash: [this._recipeItem("step_mash")],
 				step_misc: [this._recipeItem("step_misc")]
-			},
+			}
 		};
 		
 		this._handleChange = this._handleChange.bind(this);
