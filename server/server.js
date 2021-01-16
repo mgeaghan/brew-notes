@@ -49,6 +49,42 @@ const redirectIfLoggedIn = (route) => {
 	};
 };
 
+// Callbacks
+const listFetch = (user, num, page) => {
+	return (err, data) => {
+		if (err) {
+			console.log("ERROR: could not retrieve list.");
+			console.log("User ID: " + user);
+			console.log("Number of records requested: " + num);
+			console.log("Page requested: " + page);
+			let ret = {
+				success: false,
+				message: "Invalid ID supplied.",
+				user_id: null,
+				num_records: null,
+				page: null,
+				data: null
+			};
+			res.send(ret);
+		} else {
+			// return (page * num) to (page * num + num) records
+			console.log("SUCCESS: retrieved list.");
+			console.log("User ID: " + user);
+			console.log("Number of records requested: " + num);
+			console.log("Page requested: " + page);
+			let ret = {
+				success: true,
+				message: "Succesfully retrieved list of brews.",
+				user_id: user,
+				num_records: num,
+				page: page,
+				data: data  // needs tweaking - don't want to send the whole records, just an array of the inner 'data' objects
+			};
+			res.send(ret);
+		}
+	};
+};
+
 // Routes
 app.get('/', (req, res) => {
 	res.sendFile(dist + '/index.html');
@@ -106,6 +142,29 @@ app.get('/list', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 
 app.get('/edit', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	res.sendFile(dist + '/edit.html');
+});
+
+app.get('/api/list/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
+	let user_id = !!req.query.user ? req.query.user : req.user._id;
+	let num_records = 10;
+	let page_num = 0;
+	if (req.query.num) {
+		let n = parseInt(req.query.num);
+		if (Number.isInteger(n)) {
+			num_records = n;
+		}
+	}
+	if (req.query.page) {
+		let p = parseInt(req.query.page);
+		if (Number.isInteger(p)) {
+			page_num = p;
+		}
+	}
+	if (user_id === 'any') {
+		Brew.find({ 'data.private': false }, listFetch(user_id, num_records, page_num));
+	} else {
+		Brew.find({ 'data.user_id': user_id }, listFetch(user_id, num_records, page_num));
+	}
 });
 
 app.get('/api/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
