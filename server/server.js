@@ -50,7 +50,7 @@ const redirectIfLoggedIn = (route) => {
 };
 
 // Callbacks
-const listFetch = (user, num, page) => {
+const listFetch = (user, num, page, res, req) => {
 	return (err, data) => {
 		if (err) {
 			console.log("ERROR: could not retrieve list.");
@@ -59,15 +59,16 @@ const listFetch = (user, num, page) => {
 			console.log("Page requested: " + page);
 			let ret = {
 				success: false,
-				message: "Invalid ID supplied.",
+				message: "Error in retrieving data.",
 				user_id: null,
-				num_records: null,
+				num_req: num,
+				num_ret: null,
 				page: null,
 				data: null
 			};
 			res.send(ret);
 		} else {
-			// return (page * num) to (page * num + num) records
+			let num_retrieved = data.length;
 			console.log("SUCCESS: retrieved list.");
 			console.log("User ID: " + user);
 			console.log("Number of records requested: " + num);
@@ -76,9 +77,36 @@ const listFetch = (user, num, page) => {
 				success: true,
 				message: "Succesfully retrieved list of brews.",
 				user_id: user,
-				num_records: num,
+				num_req: num,
+				num_ret: num_retrieved,
 				page: page,
-				data: data  // needs tweaking - don't want to send the whole records, just an array of the inner 'data' objects
+				data: data
+			};
+			res.send(ret);
+		}
+	};
+};
+
+const listCount = (user, res, req) => {
+	return (err, count) => {
+		if (err) {
+			console.log("ERROR: could not retrieve count.");
+			console.log("User ID: " + user);
+			let ret = {
+				success: false,
+				message: "Error in retrieving count.",
+				user_id: null,
+				count: null
+			};
+			res.send(ret);
+		} else {
+			console.log("SUCCESS: retrieved list.");
+			console.log("User ID: " + user);
+			let ret = {
+				success: true,
+				message: "Succesfully retrieved count.",
+				user_id: user,
+				count: count
 			};
 			res.send(ret);
 		}
@@ -161,11 +189,20 @@ app.get('/api/list/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, re
 		}
 	}
 	if (user_id === 'any') {
-		Brew.find({ 'data.private': false }, listFetch(user_id, num_records, page_num));
+		Brew.find({ 'data.private': false }, 'data', { skip: (num_records * page_num), limit: num_records }, listFetch(user_id, num_records, page_num, res, req));
 	} else {
-		Brew.find({ 'data.user_id': user_id }, listFetch(user_id, num_records, page_num));
+		Brew.find({ 'data.user_id': user_id }, 'data', { skip: (num_records * page_num), limit: num_records }, listFetch(user_id, num_records, page_num, res, req));
 	}
 });
+
+app.get('/api/list/count', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
+	let user_id = !!req.query.user ? req.query.user : req.user._id;
+	if (user_id === 'any') {
+		Brew.countDocuments({ 'data.private': false }, listCount(user_id, res, req));
+	} else {
+		Brew.countDocuments({ 'data.user_id': user_id }, listCount(user_id, res, req));
+	}
+})
 
 app.get('/api/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	if (!req.query.id) {
