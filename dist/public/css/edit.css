@@ -121,10 +121,10 @@ body {
 	color:rgb(245, 233, 233);
 }
 
-.save-button:hover {
+.save-delete-button:hover {
 	filter: brightness(150%);
 }
 
-.save-button:active {
+.save-delete-button:active {
 	filter: brightness(50%);
 }

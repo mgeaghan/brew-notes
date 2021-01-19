@@ -45,7 +45,7 @@ const ReactApp = (props) => {
 const Home = (props) => {
 	return (
 		<div>
-			A react app!
+			Private home page.
 		</div>
 	);
 };

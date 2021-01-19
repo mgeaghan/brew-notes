@@ -114,7 +114,7 @@ const listCount = (user, res, req) => {
 };
 
 // Routes
-app.get('/', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
+app.get('/', (req, res) => {
 	res.sendFile(dist + '/index.html');
 });
 
@@ -142,7 +142,7 @@ app.post('/login', (req, res, next) => {
 	})(req, res, next);
 });
 
-app.get('/register', redirectIfLoggedIn('/login'), (req, res) => {
+app.get('/register', redirectIfLoggedIn('/home'), (req, res) => {
 	res.sendFile(dist + '/register.html');
 });
 
@@ -162,6 +162,10 @@ app.post('/register', (req, res) => {
 app.post('/logout', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	req.logout();
 	return res.redirect('/');
+});
+
+app.get('/home', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
+	res.sendFile(dist + '/home.html');
 });
 
 // app.get('/list', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
@@ -382,7 +386,7 @@ app.post('/api/delete', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) 
 
 // Catch-all route
 app.get('/*', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
-	res.sendFile(dist + '/index.html');
+	res.sendFile(dist + '/home.html');
 });
 
 // Listen
