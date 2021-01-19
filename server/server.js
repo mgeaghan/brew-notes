@@ -114,7 +114,7 @@ const listCount = (user, res, req) => {
 };
 
 // Routes
-app.get('/', (req, res) => {
+app.get('/', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	res.sendFile(dist + '/index.html');
 });
 
@@ -164,13 +164,13 @@ app.post('/logout', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	return res.redirect('/');
 });
 
-app.get('/list', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
-	res.sendFile(dist + '/list.html');
-});
+// app.get('/list', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
+// 	res.sendFile(dist + '/list.html');
+// });
 
-app.get('/edit', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
-	res.sendFile(dist + '/edit.html');
-});
+// app.get('/edit', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
+// 	res.sendFile(dist + '/edit.html');
+// });
 
 app.get('/api/list/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	let user_id = !!req.query.user ? req.query.user : req.user._id;
@@ -378,6 +378,11 @@ app.post('/api/delete', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) 
 			}
 		});
 	}
+});
+
+// Catch-all route
+app.get('/*', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
+	res.sendFile(dist + '/index.html');
 });
 
 // Listen
