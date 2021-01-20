@@ -1,6 +1,7 @@
 import React from 'react';
 import schema from '../schema';
 import update from 'immutability-helper';
+import { Redirect } from 'react-router-dom';
 
 
 const EditTextField = (props) => {
@@ -164,7 +165,13 @@ class EditApp extends React.Component {
 				misc: [this._recipeItem("misc")],
 				step_mash: [this._recipeItem("step_mash")],
 				step_misc: [this._recipeItem("step_misc")]
-			}
+			},
+			processing: {
+				active: false,
+				success: null,
+				message: null
+			},
+			redirect: null
 		};
 		
 		this._handleChange = this._handleChange.bind(this);
@@ -176,6 +183,7 @@ class EditApp extends React.Component {
 		this._handleSave = this._handleSave.bind(this);
 		this._handleDelete = this._handleDelete.bind(this);
 		this._handleRetrieve = this._handleRetrieve.bind(this);
+		this._retrieveFromUrl = this._retrieveFromUrl.bind(this);
 	}
 
 	_infoItem(data = {}) {
@@ -269,6 +277,13 @@ class EditApp extends React.Component {
 	}
 
 	_handleSave() {
+		this.setState({
+			processing: {
+				active: true,
+				success: null,
+				message: "Please wait: saving..."
+			}
+		});
 		let submitData = fetch('/api/save', {
 			method: 'POST',
 			headers: {
@@ -278,12 +293,41 @@ class EditApp extends React.Component {
 		})
 			.then(response => response.json())
 			.then(data => {
-				console.log(data)
+				console.log(data);
+				this.setState({
+					processing: {
+						active: true,
+						success: data.success,
+						message: data.message
+					}
+				});
+				setTimeout(() => {
+					this.setState({
+						processing: {
+							active: false,
+							success: null,
+							message: null
+						}
+					});
+					if (data.success) {
+						this._handleRetrieve(data.id);
+						// this.setState({
+						// 	redirect: '/edit?id=' + data.id
+						// });
+					}
+				}, 3000);
 			});
 	}
 
 	_handleDelete() {
 		if (this.state.id) {
+			this.setState({
+				processing: {
+					active: true,
+					success: null,
+					message: "Please wait: deleting..."
+				}
+			});
 			let deleteData = fetch('/api/delete', {
 				method: 'POST',
 				headers: {
@@ -293,7 +337,28 @@ class EditApp extends React.Component {
 			})
 				.then(response => response.json())
 				.then(data => {
-					console.log(data)
+					console.log(data);
+					this.setState({
+						processing: {
+							active: true,
+							success: data.success,
+							message: data.message
+						}
+					});
+					setTimeout(() => {
+						this.setState({
+							processing: {
+								active: false,
+								success: null,
+								message: null
+							}
+						});
+						if (data.success) {
+							this.setState({
+								redirect: '/list'
+							});
+						}
+					}, 3000);
 				});
 		}
 	}
@@ -314,13 +379,29 @@ class EditApp extends React.Component {
 			});
 	}
 
-	componentDidMount() {
+	_retrieveFromUrl() {
 		const urlParams = new URLSearchParams(window.location.search);
 		const id_string = urlParams.get('id');
 		if (id_string) this._handleRetrieve(id_string);
 	}
 
+	componentDidMount() {
+		this._retrieveFromUrl();
+	}
+
 	render() {
+		if (this.state.redirect) {
+			return <Redirect to={ this.state.redirect } />
+		}
+		if (this.state.processing.active) {
+			return (
+				<div id="editor">
+					<p>
+						{ this.state.processing.message }
+					</p>
+				</div>
+			);
+		}
 		return (
 			<div id="editor">
 				<form>
