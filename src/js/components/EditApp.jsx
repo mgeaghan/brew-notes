@@ -8,7 +8,7 @@ const EditTextField = (props) => {
 	return (
 		<div id={props.id} className={props.className}>
 			<label for={props.field_name} id={props.field_name + "-label"} className="field-label">{props.field_label}</label>
-			<input type="text" id={props.field_id} className={props.field_className} name={props.field_name} value={props.value} onChange={props.onChange}></input>
+			<input type="text" id={props.field_id} className={props.field_className} name={props.field_name} value={props.value} onChange={props.onChange} readOnly={props.readOnly}></input>
 		</div>
 	);
 };
@@ -17,7 +17,7 @@ const EditTextareaField = (props) => {
 	return (
 		<div id={props.id} className={props.className}>
 			<label for={props.field_name} id={props.field_name + "-label"} className="field-label">{props.field_label}</label>
-			<textarea id={props.field_id} className={props.field_className} name={props.field_name} value={props.value} onChange={props.onChange}></textarea>
+			<textarea id={props.field_id} className={props.field_className} name={props.field_name} value={props.value} onChange={props.onChange} readOnly={props.readOnly}></textarea>
 		</div>
 	);
 };
@@ -26,7 +26,7 @@ const EditNumberField = (props) => {
 	return (
 		<div id={props.id} className={props.className}>
 			<label for={props.field_name} id={props.field_name + "-label"} className="field-label">{props.field_label}</label>
-			<input type="number" id={props.field_id} className={props.field_className} name={props.field_name} value={props.value} onChange={props.onChange}></input>
+			<input type="number" id={props.field_id} className={props.field_className} name={props.field_name} value={props.value} onChange={props.onChange} readOnly={props.readOnly}></input>
 		</div>
 	);
 }
@@ -35,10 +35,10 @@ const EditSelectionField = (props) => {
 	return (
 		<div id={props.id} className={props.className}>
 			<label for={props.field_name} id={props.field_name + "-label"} className="field-label">{props.field_label}</label>
-			<select id={props.field_id} className={props.field_className} name={props.field_name} onChange={props.onChange}>
+			<select id={props.field_id} className={props.field_className} name={props.field_name} onChange={props.onChange} disabled={props.readOnly}>
 				{
 					props.options.map((x, i) => {
-						return (<option value={x} selected={props.hasOwnProperty("default") ? props.default === x : i === 0}>{x}</option>);
+						return (<option value={x} selected={props.hasOwnProperty("value") ? props.value === x : (props.hasOwnProperty("default") ? props.default : i === 0)}>{x}</option>);
 					})
 				}
 			</select>
@@ -46,19 +46,20 @@ const EditSelectionField = (props) => {
 	);
 };
 
-const fieldParams = (section, field, idx) => {
+const fieldParams = (section, field, idx, readOnly = false) => {
 	return {
 		id: "brew-" + section + "-" + field + "-" + idx + "-container",
 		className: "field-container brew-" + section + "-field-container",
 		field_id: "brew-" + section + "-" + field + "-" + idx,
 		field_className: "brew-section-field-container brew-" + section + "-field-container",
 		field_name: "brew-" + section + "-" + field + "-" + idx,
-		field_label: schema[section][field].label ? schema[section][field].label + ": " : null
+		field_label: schema[section][field].label ? schema[section][field].label + ": " : null,
+		readOnly: readOnly
 	};
 };
 
-const EditField = (section, field, value, onChange, idx = 0) => {
-	let params = fieldParams(section, field, idx);
+const EditField = (section, field, value, onChange, readOnly = false, idx = 0) => {
+	let params = fieldParams(section, field, idx, readOnly);
 	params.value = value;
 	params.onChange = onChange(field);
 	return (() => {
@@ -85,7 +86,7 @@ const EditBrewInfo = (props) => {
 		<div id="brew-information" class="brew-information">
 			{Object.keys(schema.information).map(x => {
 				let value = props.data.hasOwnProperty(x) ? props.data[x] : "";
-				return EditField("information", x, value, props.onChange);
+				return EditField("information", x, value, props.onChange, props.readOnly);
 			})}
 		</div>
 	);
@@ -98,11 +99,13 @@ const EditRecipeItem = (props) => {
 			<div className="recipe-item">
 				{Object.keys(schema[props.type]).map((x, i) => {
 					let value = props.data.hasOwnProperty(x) ? props.data[x] : "";
-					return EditField(props.type, x, value, props.onChange, props.idx)
+					return EditField(props.type, x, value, props.onChange, props.readOnly, props.idx)
 				}).filter(x => x)
 				}
 			</div>
-			<RemItemButton onClick={props.handleRemove} />
+			{ props.readOnly ? (<div></div>) : (
+				<RemItemButton onClick={props.handleRemove} />
+			) }
 		</div>
 	);
 };
@@ -117,9 +120,12 @@ const EditRecipeItemList = (props) => {
 					idx: i,
 					data: x,
 					onChange: props.handleRecipeChange(props.type, i),
-					handleRemove: props.handleRemRecipeItem(props.type, i)
+					handleRemove: props.handleRemRecipeItem(props.type, i),
+					readOnly: props.readOnly
 			}))}
-			<AddItemButton onClick={props.handleAddRecipeItem(props.type)} text={props.button_text} />
+			{ props.readOnly ? (<div></div>) : (
+				<AddItemButton onClick={props.handleAddRecipeItem(props.type)} text={props.button_text} />
+			) }
 		</div>
 	);
 };
@@ -400,7 +406,7 @@ class EditApp extends React.Component {
 			.then(response => response.json())
 			.then(data => {
 				if (data.success) {
-					this.setState({ id: data.id, data: data.data });
+					this.setState({ id: data.id, data: data.data, readOnly: true });
 				}
 				console.log(data);
 			});
