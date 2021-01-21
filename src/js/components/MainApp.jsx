@@ -1,9 +1,9 @@
 import React from 'react';
 
-const ReactApp = (props) => {
+const MainApp = (props) => {
 	return (
 		<p>A react app!</p>
 	);
 };
 
-export default ReactApp;
+export default MainApp;

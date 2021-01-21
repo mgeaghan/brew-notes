@@ -103,7 +103,7 @@ body {
 	color: rgb(210, 219, 227);
 }
 
-.save-delete-button {
+.button {
 	display: inline-block;
 	padding: 10px;
 	border-radius: 5px;
@@ -121,10 +121,15 @@ body {
 	color:rgb(245, 233, 233);
 }
 
-.save-delete-button:hover {
+.button:hover {
 	filter: brightness(150%);
 }
 
-.save-delete-button:active {
+.button:active {
 	filter: brightness(50%);
+}
+
+.view-edit-button {
+	background-color: rgb(71, 122, 140);
+	color:rgb(233, 243, 245);
 }

@@ -138,13 +138,25 @@ const RemItemButton = (props) => {
 
 const SaveButton = (props) => {
 	return (
-		<div className="save-button save-delete-button" onClick={props.onClick}>Save</div>
+		<div className="save-button save-delete-button button" onClick={props.onClick}>Save</div>
 	);
 };
 
 const DeleteButton = (props) => {
 	return (
-		<div className="delete-button save-delete-button" onClick={props.onClick}>Delete</div>
+		<div className="delete-button save-delete-button button" onClick={props.onClick}>Delete</div>
+	);
+};
+
+const EditButton = (props) => {
+	return (
+		<div className="edit-button view-edit-button button" onClick={props.onClick}>Edit</div>
+	);
+};
+
+const ViewButton = (props) => {
+	return (
+		<div className="view-button view-edit-button button" onClick={props.onClick}>Finish Editing</div>
 	);
 };
 
@@ -171,7 +183,8 @@ class EditApp extends React.Component {
 				success: null,
 				message: null
 			},
-			redirect: null
+			redirect: null,
+			readOnly: this.props.hasOwnProperty('readOnly') ? this.props.readOnly : false
 		};
 		
 		this._handleChange = this._handleChange.bind(this);
@@ -184,6 +197,8 @@ class EditApp extends React.Component {
 		this._handleDelete = this._handleDelete.bind(this);
 		this._handleRetrieve = this._handleRetrieve.bind(this);
 		this._retrieveFromUrl = this._retrieveFromUrl.bind(this);
+		this._handleSetReadOnly = this._handleSetReadOnly.bind(this);
+		this._handleUnsetReadOnly = this._handleUnsetReadOnly.bind(this);
 	}
 
 	_infoItem(data = {}) {
@@ -363,6 +378,18 @@ class EditApp extends React.Component {
 		}
 	}
 
+	_handleSetReadOnly() {
+		this.setState({
+			readOnly: true
+		});
+	}
+
+	_handleUnsetReadOnly() {
+		this.setState({
+			readOnly: false
+		});
+	}
+
 	_handleRetrieve(id_string) {
 		let getData = fetch('/api/fetch?id=' + id_string, {
 			method: 'GET',
@@ -395,7 +422,7 @@ class EditApp extends React.Component {
 		}
 		if (this.state.processing.active) {
 			return (
-				<div id="editor">
+				<div id="processing-message">
 					<p>
 						{ this.state.processing.message }
 					</p>
@@ -408,9 +435,15 @@ class EditApp extends React.Component {
 					<h1>Edit brew</h1>
 					<EditBrewInfo
 						data={this.state.data.information}
-						onChange={this._handleChange} />
-					<SaveButton onClick={this._handleSave} />
-					<DeleteButton onClick={this._handleDelete} />
+						onChange={this._handleChange}
+						readOnly={this.state.readOnly} />
+					{ this.state.readOnly ? (<div>
+						<EditButton onClick={this._handleUnsetReadOnly} />
+					</div>) : <div>
+						<SaveButton onClick={this._handleSave} />
+						<DeleteButton onClick={this._handleDelete} />
+						<ViewButton onClick={this._handleSetReadOnly} />
+					</div> }
 					<h2>Recipe</h2>
 					<EditRecipeItemList
 						type="fermentables"
@@ -419,7 +452,8 @@ class EditApp extends React.Component {
 						button_text="Add Fermentable"
 						handleRecipeChange={this._handleRecipeChange}
 						handleAddRecipeItem={this._handleAddRecipeItem}
-						handleRemRecipeItem={this._handleRemRecipeItem} />
+						handleRemRecipeItem={this._handleRemRecipeItem}
+						readOnly={this.state.readOnly} />
 					<EditRecipeItemList
 						type="hops"
 						heading="Hops"
@@ -427,7 +461,8 @@ class EditApp extends React.Component {
 						button_text="Add Hops"
 						handleRecipeChange={this._handleRecipeChange}
 						handleAddRecipeItem={this._handleAddRecipeItem}
-						handleRemRecipeItem={this._handleRemRecipeItem} />
+						handleRemRecipeItem={this._handleRemRecipeItem}
+						readOnly={this.state.readOnly} />
 					<EditRecipeItemList
 						type="yeast"
 						heading="Yeast"
@@ -435,7 +470,8 @@ class EditApp extends React.Component {
 						button_text="Add Yeast"
 						handleRecipeChange={this._handleRecipeChange}
 						handleAddRecipeItem={this._handleAddRecipeItem}
-						handleRemRecipeItem={this._handleRemRecipeItem} />
+						handleRemRecipeItem={this._handleRemRecipeItem}
+						readOnly={this.state.readOnly} />
 					<EditRecipeItemList
 						type="misc"
 						heading="Miscellaneous"
@@ -443,7 +479,8 @@ class EditApp extends React.Component {
 						button_text="Add Miscellaneous"
 						handleRecipeChange={this._handleRecipeChange}
 						handleAddRecipeItem={this._handleAddRecipeItem}
-						handleRemRecipeItem={this._handleRemRecipeItem} />
+						handleRemRecipeItem={this._handleRemRecipeItem}
+						readOnly={this.state.readOnly} />
 					<EditRecipeItemList
 						type="step_mash"
 						heading="Mash Steps"
@@ -451,7 +488,8 @@ class EditApp extends React.Component {
 						button_text="Add Step"
 						handleRecipeChange={this._handleRecipeChange}
 						handleAddRecipeItem={this._handleAddRecipeItem}
-						handleRemRecipeItem={this._handleRemRecipeItem} />
+						handleRemRecipeItem={this._handleRemRecipeItem}
+						readOnly={this.state.readOnly} />
 					<EditRecipeItemList
 						type="step_misc"
 						heading="Additional Notes"
@@ -459,9 +497,15 @@ class EditApp extends React.Component {
 						button_text="Add Note"
 						handleRecipeChange={this._handleRecipeChange}
 						handleAddRecipeItem={this._handleAddRecipeItem}
-						handleRemRecipeItem={this._handleRemRecipeItem} />
-					<SaveButton onClick={this._handleSave} />
-					<DeleteButton onClick={this._handleDelete} />
+						handleRemRecipeItem={this._handleRemRecipeItem}
+						readOnly={this.state.readOnly} />
+					{ this.state.readOnly ? (<div>
+						<EditButton onClick={this._handleUnsetReadOnly} />
+					</div>) : <div>
+						<SaveButton onClick={this._handleSave} />
+						<DeleteButton onClick={this._handleDelete} />
+						<ViewButton onClick={this._handleSetReadOnly} />
+					</div> }
 				</form>
 			</div>
 		);

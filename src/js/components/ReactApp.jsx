@@ -33,6 +33,9 @@ const ReactApp = (props) => {
 					<Route path="/edit">
 						<EditApp />
 					</Route>
+					<Route path="/view">
+						<EditApp readOnly={true} />
+					</Route>
 					<Route path="/home">
 						<Home />
 					</Route>
