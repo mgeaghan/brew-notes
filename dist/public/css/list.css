@@ -25,3 +25,31 @@
 .list-item-inner:hover {
 	filter: brightness(150%);
 }
+
+.page-selector-element {
+	margin: 10px;
+}
+
+.page-selector-current {
+	background-color: rgb(164, 220, 168);
+}
+
+.page-selector-link {
+	background-color: aliceblue;
+}
+
+.page-selector-link:hover {
+	filter: brightness(150%);
+}
+
+.page-selector-link:active {
+
+}
+
+.page-selector-separator {}
+
+.page-selector-link-current {
+	border: 1px solid;
+	border-radius: 5px;
+	padding: 5px;
+}

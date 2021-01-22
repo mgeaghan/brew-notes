@@ -193,18 +193,18 @@ app.get('/api/list/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, re
 		}
 	}
 	if (user_id === 'any') {  // change this so the logged-in user can see their private brews as well
-		Brew.find({ 'data.private': false }, 'data', { skip: (num_records * page_num), limit: num_records }, listFetch(user_id, num_records, page_num, res, req));
+		Brew.find({ $or: [{ 'data.user_id': req.user._id }, { 'data.private': false }] }, 'data', { skip: (num_records * page_num), limit: num_records }, listFetch(user_id, num_records, page_num, res, req));
 	} else {
-		Brew.find({ 'data.user_id': user_id }, 'data', { skip: (num_records * page_num), limit: num_records }, listFetch(user_id, num_records, page_num, res, req));
+		Brew.find({ 'data.user_id': user_id, $or: [{ 'data.user_id': req.user._id }, { 'data.private': false }] }, 'data', { skip: (num_records * page_num), limit: num_records }, listFetch(user_id, num_records, page_num, res, req));
 	}
 });
 
 app.get('/api/list/count', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	let user_id = !!req.query.user ? req.query.user : req.user._id;
 	if (user_id === 'any') {  // change this so the logged-in user can see their private brews as well
-		Brew.countDocuments({ 'data.private': false }, listCount(user_id, res, req));
+		Brew.countDocuments({ $or: [{ 'data.user_id': req.user._id }, { 'data.private': false }] }, listCount(user_id, res, req));
 	} else {
-		Brew.countDocuments({ 'data.user_id': user_id }, listCount(user_id, res, req));
+		Brew.countDocuments({ 'data.user_id': user_id, $or: [{ 'data.user_id': req.user._id }, { 'data.private': false }] }, listCount(user_id, res, req));
 	}
 })
 
