@@ -17,6 +17,7 @@ const ReactApp = (props) => {
 					<Link to="/home">Home</Link>
 					<Link to="/list">List</Link>
 					<Link to="/edit">Edit</Link>
+					<a href="/logout">Logout</a>
 				</nav>
 
 				<div id="nav-padder"></div>

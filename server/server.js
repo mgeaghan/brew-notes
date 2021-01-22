@@ -159,7 +159,7 @@ app.post('/register', (req, res) => {
 	});
 });
 
-app.post('/logout', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
+app.get('/logout', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	req.logout();
 	return res.redirect('/');
 });
