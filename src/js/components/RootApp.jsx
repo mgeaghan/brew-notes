@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MainApp = (props) => {
+const RootApp = (props) => {
 	return (
 		<div>
 			<p>A react app!</p>
@@ -9,4 +9,4 @@ const MainApp = (props) => {
 	);
 };
 
-export default MainApp;
+export default RootApp;

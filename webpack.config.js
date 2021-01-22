@@ -2,10 +2,8 @@ const path = require('path');
 
 module.exports = {
 	entry: {
-		main: './src/js/main.js',
+		root: './src/js/root.js',
 		home: './src/js/home.js',
-		edit: './src/js/edit.js',
-		list: './src/js/list.js',
 	},
 	output: {
 		filename: '[name].js',

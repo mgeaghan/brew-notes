@@ -1,8 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const ListItem = (props) => {
 	return (
-		<a className="list-item" href={"/edit?id=" + props.id}>
+		<Link className="list-item" to={"/view?id=" + props.id}>
 			<div className="list-item-inner">
 				<h4>{props.name}</h4>
 				<div className="list-text list-stlye">{props.style}</div>
@@ -11,7 +12,7 @@ const ListItem = (props) => {
 				<div className="list-text list-date">{props.date_created}</div>
 				<div className="list-text list-date">{props.date_modified}</div>
 			</div>
-		</a>
+		</Link>
 	);
 };
 

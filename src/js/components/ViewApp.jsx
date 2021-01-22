@@ -1,167 +1,103 @@
 import React from 'react';
 import schema from '../schema';
+import update from 'immutability-helper';
+import { Redirect } from 'react-router-dom';
 
 
-const EditTextField = (props) => {
+const ViewField = (props) => {
 	return (
 		<div id={props.id} className={props.className}>
-			<label for={props.field_name} id={props.field_name + "-label"} className="field-label">{props.field_label}</label>
-			<input type="text" id={props.field_id} className={props.field_className} name={props.field_name} value={props.value} onChange={props.onChange}></input>
+			<h5 id={props.field_name + "-label"} className="field-label">{props.field_label}</h5>
+			<p id={props.field_id} className={props.field_className}>{props.value}</p>
 		</div>
 	);
 };
 
-const EditTextareaField = (props) => {
-	return (
-		<div id={props.id} className={props.className}>
-			<label for={props.field_name} id={props.field_name + "-label"} className="field-label">{props.field_label}</label>
-			<textarea id={props.field_id} className={props.field_className} name={props.field_name} value={props.value} onChange={props.onChange}></textarea>
-		</div>
-	);
-};
-
-const EditNumberField = (props) => {
-	return (
-		<div id={props.id} className={props.className}>
-			<label for={props.field_name} id={props.field_name + "-label"} className="field-label">{props.field_label}</label>
-			<input type="number" id={props.field_id} className={props.field_className} name={props.field_name} value={props.value} onChange={props.onChange}></input>
-		</div>
-	);
-}
-
-const EditSelectionField = (props) => {
-	return (
-		<div id={props.id} className={props.className}>
-			<label for={props.field_name} id={props.field_name + "-label"} className="field-label">{props.field_label}</label>
-			<select id={props.field_id} className={props.field_className} name={props.field_name} onChange={props.onChange}>
-				{
-					props.options.map((x, i) => {
-						return (<option value={x} selected={props.hasOwnProperty("default") ? props.default === x : i === 0}>{x}</option>);
-					})
-				}
-			</select>
-		</div>
-	);
-};
-
-const fieldParams = (section, field) => {
+const fieldParams = (section, field, idx, value) => {
 	return {
-		id: "brew-" + section + "-" + field + "-container",
+		id: "brew-" + section + "-" + field + "-" + idx + "-container",
 		className: "field-container brew-" + section + "-field-container",
-		field_id: "brew-" + section + "-" + field,
+		field_id: "brew-" + section + "-" + field + "-" + idx,
 		field_className: "brew-section-field-container brew-" + section + "-field-container",
-		field_name: "brew-" + section + "-" + field,
-		field_label: schema[section][field].label ? schema[section][field].label + ": " : null
+		field_name: "brew-" + section + "-" + field + "-" + idx,
+		field_label: schema[section][field].label ? schema[section][field].label + ": " : null,
+		value: value
 	};
 };
 
-const EditField = (section, field, value, onChange) => {
-	let params = fieldParams(section, field);
-	params.value = value;
-	params.onChange = onChange(field);
-	return (() => {
-		switch(schema[section][field].type) {
-			case "string":
-				return EditTextField(params);
-			case "number":
-				return EditNumberField(params);
-			case "textarea":
-				params.className = "textarea-field-container " + params.className;
-				return EditTextareaField(params);
-			case "select":
-				params.options = schema[section][field].options;
-				params.default = schema[section][field].default;
-				return EditSelectionField(params);
-			default:
-				return null;
-		}
-	})();
-};
-
-const EditBrewInfo = (props) => {
+const ViewBrewInfo = (props) => {
 	return (
 		<div id="brew-information" class="brew-information">
 			{Object.keys(schema.information).map(x => {
 				let value = props.data.hasOwnProperty(x) ? props.data[x] : "";
-				return EditField("information", x, value, props.onChange);
+				let params = fieldParams("information", x, 0, value);
+				return ViewField(params);
 			})}
 		</div>
 	);
 };
 
-const EditRecipeItem = (props) => {
+const ViewRecipeItem = (props) => {
 	return (
 		<div className="recipe-item-wrapper">
 			<span className="recipe-item-idx">{(props.idx + 1) + ". "}</span>
 			<div className="recipe-item">
 				{Object.keys(schema[props.type]).map((x, i) => {
 					let value = props.data.hasOwnProperty(x) ? props.data[x] : "";
-					return EditField(props.type, x, value, props.onChange)
+					let params = fieldParams(props.type, x, props.idx, value);
+					return ViewField(params)
 				}).filter(x => x)
 				}
 			</div>
-			<RemItemButton onClick={props.handleRemove} />
 		</div>
 	);
 };
 
-const EditRecipeItemList = (props) => {
+const ViewRecipeItemList = (props) => {
 	return (
 		<div id={"recipe-item-list-" + props.type} className={"recipe-item-list"}>
 			<h4>{props.heading}</h4>
 			{props.data
-				.map((x, i) => EditRecipeItem({
+				.map((x, i) => ViewRecipeItem({
 					type: props.type,
 					idx: i,
-					data: x,
-					onChange: props.handleRecipeChange(props.type, i),
-					handleRemove: props.handleRemRecipeItem(props.type, i)
+					data: x
 			}))}
-			<AddItemButton onClick={props.handleAddRecipeItem(props.type)} text={props.button_text} />
 		</div>
 	);
 };
 
-const AddItemButton = (props) => {
+const EditButton = (props) => {
 	return (
-		<div className="add-rem-item-button add-item" onClick={props.onClick}><i className="fas fa-plus"></i></div>
+		<div className="edit-button view-edit-button button" onClick={props.onClick}>Edit</div>
 	);
 };
 
-const RemItemButton = (props) => {
-	return (
-		<div className="add-rem-item-button rem-item" onClick={props.onClick}><i className="fas fa-minus"></i></div>
-	);
-}
-
-const SaveButton = (props) => {
-	return (
-		<div className="save-button" onClick={props.onClick}>Save</div>
-	);
-};
-
-class EditApp extends React.Component {
+class ViewApp extends React.Component {
 	constructor(props) {
 		super(props);
 
-		
 		this.state = {
-			information: this._infoItem(),
-			fermentables: [this._recipeItem("fermentables")],
-			hops: [this._recipeItem("hops")],
-			yeast: [this._recipeItem("yeast")],
-			misc: [this._recipeItem("misc")],
-			step_mash: [this._recipeItem("step_mash")],
-			step_misc: [this._recipeItem("step_misc")]
+			id: null,
+			data: {
+				user_id: null,
+				private: false,
+				information: this._infoItem(),
+				fermentables: [this._recipeItem("fermentables")],
+				hops: [this._recipeItem("hops")],
+				yeast: [this._recipeItem("yeast")],
+				misc: [this._recipeItem("misc")],
+				step_mash: [this._recipeItem("step_mash")],
+				step_misc: [this._recipeItem("step_misc")]
+			},
+			redirect: null
 		};
 		
-		this._handleChange = this._handleChange.bind(this);
-		this._handleRecipeChange = this._handleRecipeChange.bind(this);
-		this._handleAddRecipeItem = this._handleAddRecipeItem.bind(this);
-		this._handleRemRecipeItem = this._handleRemRecipeItem.bind(this);
 		this._recipeItem = this._recipeItem.bind(this);
 		this._infoItem = this._infoItem.bind(this);
-		this._handleSave = this._handleSave.bind(this);
+		this._handleRetrieve = this._handleRetrieve.bind(this);
+		this._retrieveFromUrl = this._retrieveFromUrl.bind(this);
+		this._handleEdit = this._handleEdit.bind(this);
 	}
 
 	_infoItem(data = {}) {
@@ -202,116 +138,86 @@ class EditApp extends React.Component {
 		}
 	}
 
-	_handleChange(field) {
-		return (e) => {
-			let update_state = {information: Object.assign({}, this.state.information)};
-			update_state.information[field] = e.target.value;
-			this.setState(update_state);
-		};
+	_handleEdit() {
+		this.setState({
+			redirect: '/edit?id=' + this.state.id
+		});
 	}
 
-	_handleRecipeChange(type, idx) {
-		return (field) => {
-			return (e) => {
-				let update_state = {};
-				update_state[type] = [...this.state[type]];
-				update_state[type][idx][field] = e.target.value;
-				this.setState(update_state);
-			};
-		};
-	}
-
-	_handleAddRecipeItem(type) {
-		return () => {
-			let update_state = {};
-			update_state[type] = [...this.state[type]];
-			update_state[type].push(this._recipeItem(type));
-			this.setState(update_state);
-		};
-	}
-
-	_handleRemRecipeItem(type, idx) {
-		return () => {
-			let update_state = {};
-			let update_array = [...this.state[type]];
-			if (idx === (update_array.length - 1)) {
-				update_state[type] = update_array.slice(0, idx);
-			} else if (idx === 0) {
-				update_state[type] = update_array.slice(1);
-			} else {
-				update_state[type] = update_array.slice(0, idx).concat(update_array.slice(idx + 1));
+	_handleRetrieve(id_string) {
+		let getData = fetch('/api/fetch?id=' + id_string, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
 			}
-			this.setState(update_state);
+		})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					this.setState({ id: data.id, data: data.data, readOnly: true });
+				}  // else display message
+				console.log(data);
+			});
+	}
+
+	_retrieveFromUrl() {
+		const urlParams = new URLSearchParams(window.location.search);
+		const id_string = urlParams.get('id');
+		if (id_string) {
+			this._handleRetrieve(id_string);
+		} else {
+			this.setState({ redirect: '/home' })
 		}
 	}
 
-	_handleSave() {
-		return null;
+	componentDidMount() {
+		this._retrieveFromUrl();
 	}
 
 	render() {
+		if (this.state.redirect) {
+			return <Redirect to={ this.state.redirect } />
+		}
+		if (!this.state.id) {
+			return <div></div>
+		}
 		return (
-			<div id="editor">
+			<div id="viewer">
 				<form>
-					<h1>Edit brew</h1>
-					<EditBrewInfo
-						data={this.state.information}
-						onChange={this._handleChange} />
-					<SaveButton onClick={this._handleSave} />
+					<h1>View brew</h1>
+					<ViewBrewInfo
+						data={this.state.data.information} />
+					<EditButton onClick={this._handleEdit} />
 					<h2>Recipe</h2>
-					<EditRecipeItemList
+					<ViewRecipeItemList
 						type="fermentables"
 						heading="Fermentables"
-						data={this.state.fermentables}
-						button_text="Add Fermentable"
-						handleRecipeChange={this._handleRecipeChange}
-						handleAddRecipeItem={this._handleAddRecipeItem}
-						handleRemRecipeItem={this._handleRemRecipeItem} />
-					<EditRecipeItemList
+						data={this.state.data.fermentables} />
+					<ViewRecipeItemList
 						type="hops"
 						heading="Hops"
-						data={this.state.hops}
-						button_text="Add Hops"
-						handleRecipeChange={this._handleRecipeChange}
-						handleAddRecipeItem={this._handleAddRecipeItem}
-						handleRemRecipeItem={this._handleRemRecipeItem} />
-					<EditRecipeItemList
+						data={this.state.data.hops} />
+					<ViewRecipeItemList
 						type="yeast"
 						heading="Yeast"
-						data={this.state.yeast}
-						button_text="Add Yeast"
-						handleRecipeChange={this._handleRecipeChange}
-						handleAddRecipeItem={this._handleAddRecipeItem}
-						handleRemRecipeItem={this._handleRemRecipeItem} />
-					<EditRecipeItemList
+						data={this.state.data.yeast} />
+					<ViewRecipeItemList
 						type="misc"
 						heading="Miscellaneous"
-						data={this.state.misc}
-						button_text="Add Miscellaneous"
-						handleRecipeChange={this._handleRecipeChange}
-						handleAddRecipeItem={this._handleAddRecipeItem}
-						handleRemRecipeItem={this._handleRemRecipeItem} />
-					<EditRecipeItemList
+						data={this.state.data.misc} />
+					<ViewRecipeItemList
 						type="step_mash"
 						heading="Mash Steps"
-						data={this.state.step_mash}
-						button_text="Add Step"
-						handleRecipeChange={this._handleRecipeChange}
-						handleAddRecipeItem={this._handleAddRecipeItem}
-						handleRemRecipeItem={this._handleRemRecipeItem} />
-					<EditRecipeItemList
+						data={this.state.data.step_mash} />
+					<ViewRecipeItemList
 						type="step_misc"
 						heading="Additional Notes"
-						data={this.state.step_misc}
-						button_text="Add Note"
-						handleRecipeChange={this._handleRecipeChange}
-						handleAddRecipeItem={this._handleAddRecipeItem}
-						handleRemRecipeItem={this._handleRemRecipeItem} />
-					<SaveButton onClick={this._handleSave} />
+						data={this.state.data.step_misc} />
+					<EditButton onClick={this._handleEdit} />
 				</form>
 			</div>
 		);
 	}
 }
 
-export default EditApp;
+export default ViewApp;

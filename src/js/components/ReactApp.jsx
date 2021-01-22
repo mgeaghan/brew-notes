@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import ListApp from './ListApp.jsx';
 import EditApp from './EditApp.jsx';
+import ViewApp from './ViewApp.jsx';
 
 const ReactApp = (props) => {
 	return (
@@ -34,7 +35,7 @@ const ReactApp = (props) => {
 						<EditApp />
 					</Route>
 					<Route path="/view">
-						<EditApp readOnly={true} />
+						<ViewApp />
 					</Route>
 					<Route path="/home">
 						<Home />

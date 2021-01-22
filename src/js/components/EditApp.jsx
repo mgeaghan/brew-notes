@@ -205,6 +205,7 @@ class EditApp extends React.Component {
 		this._retrieveFromUrl = this._retrieveFromUrl.bind(this);
 		this._handleSetReadOnly = this._handleSetReadOnly.bind(this);
 		this._handleUnsetReadOnly = this._handleUnsetReadOnly.bind(this);
+		this._handleView = this._handleView.bind(this);
 	}
 
 	_infoItem(data = {}) {
@@ -331,10 +332,10 @@ class EditApp extends React.Component {
 						}
 					});
 					if (data.success) {
-						this._handleRetrieve(data.id);
-						// this.setState({
-						// 	redirect: '/edit?id=' + data.id
-						// });
+						// this._handleRetrieve(data.id);
+						this.setState({
+							redirect: '/view?id=' + data.id
+						});
 					}
 				}, 3000);
 			});
@@ -396,6 +397,14 @@ class EditApp extends React.Component {
 		});
 	}
 
+	_handleView() {
+		if (this.state.id) {
+			this.setState({
+				redirect: '/view?id=' + this.state.id
+			});
+		}
+	}
+
 	_handleRetrieve(id_string) {
 		let getData = fetch('/api/fetch?id=' + id_string, {
 			method: 'GET',
@@ -406,7 +415,7 @@ class EditApp extends React.Component {
 			.then(response => response.json())
 			.then(data => {
 				if (data.success) {
-					this.setState({ id: data.id, data: data.data, readOnly: true });
+					this.setState({ id: data.id, data: data.data, readOnly: false });
 				}
 				console.log(data);
 			});
@@ -443,13 +452,11 @@ class EditApp extends React.Component {
 						data={this.state.data.information}
 						onChange={this._handleChange}
 						readOnly={this.state.readOnly} />
-					{ this.state.readOnly ? (<div>
-						<EditButton onClick={this._handleUnsetReadOnly} />
-					</div>) : <div>
-						<SaveButton onClick={this._handleSave} />
+					<SaveButton onClick={this._handleSave} />
+					{ this.state.id ? (<div>
 						<DeleteButton onClick={this._handleDelete} />
-						<ViewButton onClick={this._handleSetReadOnly} />
-					</div> }
+						<ViewButton onClick={this._handleView} />
+					</div>) : <div></div> }
 					<h2>Recipe</h2>
 					<EditRecipeItemList
 						type="fermentables"
@@ -505,13 +512,11 @@ class EditApp extends React.Component {
 						handleAddRecipeItem={this._handleAddRecipeItem}
 						handleRemRecipeItem={this._handleRemRecipeItem}
 						readOnly={this.state.readOnly} />
-					{ this.state.readOnly ? (<div>
-						<EditButton onClick={this._handleUnsetReadOnly} />
-					</div>) : <div>
-						<SaveButton onClick={this._handleSave} />
+					<SaveButton onClick={this._handleSave} />
+					{ this.state.id ? (<div>
 						<DeleteButton onClick={this._handleDelete} />
-						<ViewButton onClick={this._handleSetReadOnly} />
-					</div> }
+						<ViewButton onClick={this._handleView} />
+					</div>) : <div></div> }
 				</form>
 			</div>
 		);
