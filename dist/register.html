@@ -2,6 +2,8 @@
 <html lang="en">
 	<head>
 		<title>Register</title>
+		<link rel="stylesheet" type="text/css" href="/static/css/main.css">
+		<link rel="stylesheet" type="text/css" href="/static/css/login-register.css">
 	</head>
 
 	<body>
@@ -12,18 +14,18 @@
 
 			<div class="field">
 				<label>Username:</label>
-				<input type="text" name="username" />
+				<input type="text" name="username" class="text-input username-password username" />
 				<br />
 			</div>
 
 			<div class="field">
 				<label>Password:</label>
-				<input type="password" name="password" id="password" required />
+				<input type="password" name="password" id="password" class="text-input username-password password" required />
 			</div>
 
 			<div class="field">
 				<label>Retype password:</label>
-				<input type="password" name="confirm-password" id="confirm-password" required />
+				<input type="password" name="confirm-password" id="confirm-password" class="text-input username-password password" required />
 			</div>
 
 			<div class="field">
@@ -32,6 +34,8 @@
 
 			<label id="error-message"></label>
 		</form>
+
+		<a href="/login">Login</a>
 
 		<script>
 			const password = document.getElementById("password");

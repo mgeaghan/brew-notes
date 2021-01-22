@@ -27,9 +27,10 @@
 }
 
 .page-selector {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	margin: 30px auto 30px auto;
 	text-align: center;
 	cursor: default;
 }
@@ -38,12 +39,19 @@
 	margin: 10px;
 }
 
+.page-selector-link-current {
+	border: 1px solid;
+	border-radius: 5px;
+	padding: 10px;
+	background-color: rgb(114, 128, 139);
+}
+
 .page-selector-current {
-	background-color: rgb(164, 220, 168);
+	background-color: rgb(106, 143, 106);
 }
 
 .page-selector-link {
-	background-color: aliceblue;
+	
 }
 
 .page-selector-link:hover {
@@ -55,9 +63,3 @@
 }
 
 .page-selector-separator {}
-
-.page-selector-link-current {
-	border: 1px solid;
-	border-radius: 5px;
-	padding: 10px;
-}

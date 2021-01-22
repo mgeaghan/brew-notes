@@ -15,11 +15,11 @@ const ViewField = (props) => {
 
 const fieldParams = (section, field, idx, value) => {
 	return {
-		id: "brew-" + section + "-" + field + "-" + idx + "-container",
-		className: "field-container brew-" + section + "-field-container",
-		field_id: "brew-" + section + "-" + field + "-" + idx,
-		field_className: "brew-section-field-container brew-" + section + "-field-container",
-		field_name: "brew-" + section + "-" + field + "-" + idx,
+		id: "view-brew-" + section + "-" + field + "-" + idx + "-container",
+		className: "view-field-container view-brew-" + section + "-field-container",
+		field_id: "view-brew-" + section + "-" + field + "-" + idx,
+		field_className: "view-brew-section-field-container view-brew-" + section + "-field-container",
+		field_name: "view-brew-" + section + "-" + field + "-" + idx,
 		field_label: schema[section][field].label ? schema[section][field].label + ": " : null,
 		value: value
 	};
@@ -27,7 +27,7 @@ const fieldParams = (section, field, idx, value) => {
 
 const ViewBrewInfo = (props) => {
 	return (
-		<div id="brew-information" class="brew-information">
+		<div id="view-brew-information" class="view-brew-information">
 			{Object.keys(schema.information).map(x => {
 				let value = props.data.hasOwnProperty(x) ? props.data[x] : "";
 				let params = fieldParams("information", x, 0, value);
@@ -39,9 +39,9 @@ const ViewBrewInfo = (props) => {
 
 const ViewRecipeItem = (props) => {
 	return (
-		<div className="recipe-item-wrapper">
-			<span className="recipe-item-idx">{(props.idx + 1) + ". "}</span>
-			<div className="recipe-item">
+		<div className="view-recipe-item-wrapper">
+			<span className="view-recipe-item-idx">{(props.idx + 1) + ". "}</span>
+			<div className="view-recipe-item">
 				{Object.keys(schema[props.type]).map((x, i) => {
 					let value = props.data.hasOwnProperty(x) ? props.data[x] : "";
 					let params = fieldParams(props.type, x, props.idx, value);
@@ -55,7 +55,7 @@ const ViewRecipeItem = (props) => {
 
 const ViewRecipeItemList = (props) => {
 	return (
-		<div id={"recipe-item-list-" + props.type} className={"recipe-item-list"}>
+		<div id={"view-recipe-item-list-" + props.type} className={"view-recipe-item-list"}>
 			<h4>{props.heading}</h4>
 			{props.data
 				.map((x, i) => ViewRecipeItem({

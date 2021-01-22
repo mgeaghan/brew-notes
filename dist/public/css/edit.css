@@ -3,7 +3,7 @@ body {
 }
 
 .brew-information {
-	background-color: rgb(235, 232, 225);
+	background-color: rgb(98, 95, 87);
 	border-radius: 5px;
 	padding: 5px;
 	margin: 5px;
@@ -12,7 +12,7 @@ body {
 
 .recipe-item-list {
 	display: block;
-	background-color: rgb(225, 231, 235);
+	background-color: rgb(85, 99, 109);
 	border-radius: 5px;
 	padding: 5px;
 	margin: 5px;
@@ -55,8 +55,11 @@ body {
 }
 
 .brew-section-field-container {
+	background-color: rgb(189, 201, 211);
 	max-width: 95%;
 	min-width: 95%;
+	border: none;
+	border-radius: 2px;
 }
 
 .field-label {
