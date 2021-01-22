@@ -75,6 +75,8 @@ const EditField = (section, field, value, onChange, readOnly = false, idx = 0) =
 				params.options = schema[section][field].options;
 				params.default = schema[section][field].default;
 				return EditSelectionField(params);
+			case "checkbox":
+				return EditPrivateCheckbox(params);
 			default:
 				return null;
 		}
@@ -166,6 +168,15 @@ const ViewButton = (props) => {
 	);
 };
 
+const EditPrivateCheckbox = (props) => {
+	return (
+		<div className="checkbox-wrapper private-checkbox-wrapper">
+			<input type="checkbox" className="checkbox private-checkbox" name="private-checkbox" value="Private" onChange={props.onChange} checked={props.checked} disabled={props.readOnly}></input>
+			<label for="private-checkbox" id="private-checkbox-label" className="private-checkbox-label">Private</label>
+		</div>
+	);
+}
+
 class EditApp extends React.Component {
 	constructor(props) {
 		super(props);
@@ -206,6 +217,7 @@ class EditApp extends React.Component {
 		this._handleSetReadOnly = this._handleSetReadOnly.bind(this);
 		this._handleUnsetReadOnly = this._handleUnsetReadOnly.bind(this);
 		this._handleView = this._handleView.bind(this);
+		this._handleTogglePrivate = this._handleTogglePrivate.bind(this);
 	}
 
 	_infoItem(data = {}) {
@@ -405,6 +417,15 @@ class EditApp extends React.Component {
 		}
 	}
 
+	_handleTogglePrivate(e) {
+		let update_state = update(this.state, {
+			data: {
+				private: { $set: e.target.checked	}
+			}
+		});
+		this.setState(update_state);
+	}
+
 	_handleRetrieve(id_string) {
 		let getData = fetch('/api/fetch?id=' + id_string, {
 			method: 'GET',
@@ -432,6 +453,7 @@ class EditApp extends React.Component {
 	}
 
 	render() {
+		console.log(this.state.data.private);
 		if (this.state.redirect) {
 			return <Redirect to={ this.state.redirect } />
 		}
@@ -451,6 +473,10 @@ class EditApp extends React.Component {
 					<EditBrewInfo
 						data={this.state.data.information}
 						onChange={this._handleChange}
+						readOnly={this.state.readOnly} />
+					<EditPrivateCheckbox
+						onChange={this._handleTogglePrivate}
+						checked={this.state.data.private}
 						readOnly={this.state.readOnly} />
 					<SaveButton onClick={this._handleSave} />
 					{ this.state.id ? (<div>
