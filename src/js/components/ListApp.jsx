@@ -145,11 +145,13 @@ class ListApp extends React.Component {
 		console.log(this.state.data);
 		return (
 			<div>
-				<PageSelector
-					page={this.state.page}
-					total_pages={this.state.total_pages}
-					changePage={this._handlePageChange} />
-				{!!this.state.data ? <BrewList data={this.state.data}/> : <div>
+				{!!this.state.data ? (<div>
+					<PageSelector
+						page={this.state.page}
+						total_pages={this.state.total_pages}
+						changePage={this._handlePageChange} />
+					<BrewList data={this.state.data}/>
+				</div>) : <div>
 					Loading brew list...
 				</div>}
 			</div>
