@@ -14,18 +14,12 @@ const ReactApp = (props) => {
 		<Router>
 			<div>
 				<nav>
-					<ul>
-						<li>
-							<Link to="/home">Home</Link>
-						</li>
-						<li>
-							<Link to="/list">List</Link>
-						</li>
-						<li>
-							<Link to="/edit">Edit</Link>
-						</li>
-					</ul>
+					<Link to="/home">Home</Link>
+					<Link to="/list">List</Link>
+					<Link to="/edit">Edit</Link>
 				</nav>
+
+				<div id="nav-padder"></div>
 
 				<Switch>
 					<Route path="/list">
