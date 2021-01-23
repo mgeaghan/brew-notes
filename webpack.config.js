@@ -4,6 +4,7 @@ module.exports = {
 	entry: {
 		root: './src/js/root.js',
 		home: './src/js/home.js',
+		logout: './src/js/logout.js',
 	},
 	output: {
 		filename: '[name].js',

@@ -161,20 +161,13 @@ app.post('/register', (req, res) => {
 
 app.get('/logout', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	req.logout();
-	return res.redirect('/');
+	return res.sendFile(dist + '/logout.html');
+	// return res.redirect('/');
 });
 
 app.get('/home', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	res.sendFile(dist + '/home.html');
 });
-
-// app.get('/list', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
-// 	res.sendFile(dist + '/list.html');
-// });
-
-// app.get('/edit', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
-// 	res.sendFile(dist + '/edit.html');
-// });
 
 app.get('/api/list/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	let user_id = !!req.query.user ? req.query.user : req.user._id;

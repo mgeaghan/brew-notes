@@ -23,6 +23,9 @@ const ReactApp = (props) => {
 				<div id="nav-padder"></div>
 
 				<Switch>
+					<Route path="/home">
+						<Home />
+					</Route>
 					<Route path="/list">
 						<ListApp />
 					</Route>
@@ -31,9 +34,6 @@ const ReactApp = (props) => {
 					</Route>
 					<Route path="/view">
 						<ViewApp />
-					</Route>
-					<Route path="/home">
-						<Home />
 					</Route>
 				</Switch>
 			</div>
