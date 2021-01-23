@@ -2,6 +2,7 @@ import React from 'react';
 import schema from '../schema';
 import update from 'immutability-helper';
 import { Redirect } from 'react-router-dom';
+import redirectOnUnauth from '../checkAuth';
 
 
 const ViewField = (props) => {
@@ -171,6 +172,7 @@ class ViewApp extends React.Component {
 	}
 
 	componentDidMount() {
+		redirectOnUnauth();
 		this._retrieveFromUrl();
 	}
 

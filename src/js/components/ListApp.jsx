@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import redirectOnUnauth from '../checkAuth';
 
 const ListItem = (props) => {
 	return (
@@ -137,6 +138,7 @@ class ListApp extends React.Component {
 	}
 
 	componentDidMount() {
+		redirectOnUnauth();
 		this._handleRetrieve();
 		this._handlePageCount();
 	}

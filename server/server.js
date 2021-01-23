@@ -10,6 +10,9 @@ const expressSession = require('express-session')({
 	secret: process.env.SECRET,
 	resave: false,
 	saveUninitialized: false
+	/* cookie: {
+		maxAge: 300000000
+	} */
 });
 
 const dist = path.resolve(__dirname + "/../dist");
@@ -375,6 +378,15 @@ app.post('/api/delete', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) 
 			}
 		});
 	}
+});
+
+app.get('/api/checkAuth', (req, res) => {
+	let ret = { authenticated: false };
+	if (req.hasOwnProperty('user')) {
+		console.log(req.user._id);
+		ret.authenticated = true;
+	}
+	res.send(JSON.stringify(ret));
 });
 
 // Catch-all route

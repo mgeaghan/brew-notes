@@ -8,6 +8,7 @@ import {
 import ListApp from './ListApp.jsx';
 import EditApp from './EditApp.jsx';
 import ViewApp from './ViewApp.jsx';
+import redirectOnUnauth from '../checkAuth';
 
 const ReactApp = (props) => {
 	return (
@@ -41,12 +42,18 @@ const ReactApp = (props) => {
 	);
 };
 
-const Home = (props) => {
-	return (
-		<div>
-			Private home page.
-		</div>
-	);
+class Home extends React.Component {
+	componentDidMount() {
+		redirectOnUnauth();
+	}
+
+	render() {
+		return (
+			<div>
+				Private home page.
+			</div>
+		);
+	}
 };
 
 export default ReactApp;
