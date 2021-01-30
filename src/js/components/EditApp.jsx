@@ -480,11 +480,11 @@ class EditApp extends React.Component {
 						onChange={this._handleTogglePrivate}
 						checked={this.state.data.private}
 						readOnly={this.state.readOnly} />
-					<SaveButton onClick={this._handleSave} />
-					{ this.state.id ? (<div>
-						<DeleteButton onClick={this._handleDelete} />
-						<ViewButton onClick={this._handleView} />
-					</div>) : <div></div> }
+					<div className="save-delete-view">
+						<SaveButton onClick={this._handleSave} />
+						{ this.state.id ? <DeleteButton onClick={this._handleDelete} /> : "" }
+						{ this.state.id ? <ViewButton onClick={this._handleView} /> : "" }
+					</div>
 					<h2>Recipe</h2>
 					<EditRecipeItemList
 						type="fermentables"
@@ -540,11 +540,11 @@ class EditApp extends React.Component {
 						handleAddRecipeItem={this._handleAddRecipeItem}
 						handleRemRecipeItem={this._handleRemRecipeItem}
 						readOnly={this.state.readOnly} />
-					<SaveButton onClick={this._handleSave} />
-					{ this.state.id ? (<div>
-						<DeleteButton onClick={this._handleDelete} />
-						<ViewButton onClick={this._handleView} />
-					</div>) : <div></div> }
+					<div className="save-delete-view">
+						<SaveButton onClick={this._handleSave} />
+						{ this.state.id ? <DeleteButton onClick={this._handleDelete} /> : "" }
+						{ this.state.id ? <ViewButton onClick={this._handleView} /> : "" }
+					</div>
 				</form>
 			</div>
 		);

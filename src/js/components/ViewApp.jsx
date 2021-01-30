@@ -189,7 +189,9 @@ class ViewApp extends React.Component {
 					<h1>View brew</h1>
 					<ViewBrewInfo
 						data={this.state.data.information} />
-					<EditButton onClick={this._handleEdit} />
+					<div className="save-delete-view">
+						<EditButton onClick={this._handleEdit} />
+					</div>
 					<h2>Recipe</h2>
 					<ViewRecipeItemList
 						type="fermentables"
@@ -215,7 +217,9 @@ class ViewApp extends React.Component {
 						type="step_misc"
 						heading="Additional Notes"
 						data={this.state.data.step_misc} />
-					<EditButton onClick={this._handleEdit} />
+					<div className="save-delete-view">
+						<EditButton onClick={this._handleEdit} />
+					</div>
 				</form>
 			</div>
 		);

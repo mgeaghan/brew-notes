@@ -3,18 +3,18 @@ body {
 }
 
 .view-brew-information {
-	background-color: rgb(98, 95, 87);
+	background-color: var(--info-bg);
 	border-radius: 5px;
-	padding: 5px;
+	padding: 10px;
 	margin: 5px;
 	max-width: 75vw;
 }
 
 .view-recipe-item-list {
 	display: block;
-	background-color: rgb(85, 99, 109);
+	background-color: var(--recipe-bg);
 	border-radius: 5px;
-	padding: 5px;
+	padding: 10px;
 	margin: 5px;
 	max-width: 75vw;
 }
@@ -23,7 +23,7 @@ body {
 	display: flex;
 	justify-content: flex-start;
 	flex-wrap: nowrap;
-	border-bottom: 1px solid rgb(131, 131, 131);
+	border-bottom: 1px solid var(--hline-col);
 	margin-bottom: 10px;
 	width: 100%;
 }
@@ -55,14 +55,24 @@ body {
 }
 
 .view-brew-section-field-container {
-	/* background-color: rgb(189, 201, 211); */
 	max-width: 95%;
 	min-width: 95%;
 	border: none;
 	border-radius: 2px;
+	padding: 5px;
 }
 
 .view-field-label {
 	display: block;
 	padding-left: 1px;
+}
+
+#viewer {
+	width: 75vw;
+	margin: 0 auto 0 auto;
+}
+
+#viewer form {
+	display: flex;
+	flex-direction: column;
 }

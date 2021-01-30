@@ -3,6 +3,7 @@
 	--bg-col: rgb(45, 51, 56);
 	--body-padding: 5px;
 	--nav-height: 50px;
+	--highlight-col: rgb(187, 158, 78);
 }
 
 body {
@@ -41,7 +42,7 @@ nav a {
 }
 
 nav a:hover {
-	background-color: rgb(187, 158, 78);
+	background-color: var(--highlight-col);
 	color: rgb(41, 41, 41);
 }
 

@@ -1,6 +1,21 @@
+:root {
+	--list-link-col: rgb(76, 81, 83);
+	--page-select-col: rgb(103, 119, 126);
+	--page-select-current-col: rgb(105, 139, 83);
+}
+
+.brew-list {
+	display: flex;
+	flex-direction: column;
+	margin: 0 auto 0 auto;
+	width: 50vw;
+}
+
 .list-item {
 	text-decoration: none;
 	color: white;
+	padding: 0;
+	margin: 10px;
 }
 
 .list-item:hover {
@@ -15,15 +30,18 @@
 }
 
 .list-item-inner {
-	background-color: rgb(60, 71, 92);
+	background-color: var(--list-link-col);
 	border: 1px solid;
 	border-radius: 5px;
-	margin: 10px;
+	margin: 0px;
 	padding: 10px;
+	width: 100%;
 }
 
 .list-item-inner:hover {
 	filter: brightness(150%);
+	/* color: black; */
+	border: 1px solid white;
 }
 
 .page-selector {
@@ -43,11 +61,11 @@
 	border: 1px solid;
 	border-radius: 5px;
 	padding: 10px;
-	background-color: rgb(114, 128, 139);
+	background-color: var(--page-select-col);
 }
 
 .page-selector-current {
-	background-color: rgb(106, 143, 106);
+	background-color: var(--page-select-current-col);
 }
 
 .page-selector-link {
@@ -56,6 +74,9 @@
 
 .page-selector-link:hover {
 	filter: brightness(150%);
+	color: black;
+	border: 1px solid white;
+	font-weight: bold;
 }
 
 .page-selector-link:active {

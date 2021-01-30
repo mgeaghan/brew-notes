@@ -3,7 +3,8 @@ import {
 	BrowserRouter as Router,
 	Switch,
 	Route,
-	Link
+	Link,
+	Redirect
 } from 'react-router-dom';
 import ListApp from './ListApp.jsx';
 import EditApp from './EditApp.jsx';
@@ -17,7 +18,7 @@ const ReactApp = (props) => {
 				<nav>
 					<Link to="/home">Home</Link>
 					<Link to="/list">List</Link>
-					<Link to="/edit">Edit</Link>
+					<Link to="/new">New</Link>
 					<a href="/logout">Logout</a>
 				</nav>
 
@@ -29,6 +30,9 @@ const ReactApp = (props) => {
 					</Route>
 					<Route path="/list">
 						<ListApp />
+					</Route>
+					<Route path="/new">
+						<NewApp />
 					</Route>
 					<Route path="/edit">
 						<EditApp />
@@ -55,5 +59,15 @@ class Home extends React.Component {
 		);
 	}
 };
+
+class NewApp extends React.Component {
+	componentDidMount() {
+		redirectOnUnauth();
+	}
+
+	render() {
+		return <Redirect to='/edit' />;
+	}
+}
 
 export default ReactApp;

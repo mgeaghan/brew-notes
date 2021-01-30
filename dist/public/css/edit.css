@@ -3,18 +3,18 @@ body {
 }
 
 .brew-information {
-	background-color: rgb(98, 95, 87);
+	background-color: var(--info-bg);
 	border-radius: 5px;
-	padding: 5px;
+	padding: 10px;
 	margin: 5px;
 	max-width: 75vw;
 }
 
 .recipe-item-list {
 	display: block;
-	background-color: rgb(85, 99, 109);
+	background-color: var(--recipe-bg);
 	border-radius: 5px;
-	padding: 5px;
+	padding: 10px;
 	margin: 5px;
 	max-width: 75vw;
 }
@@ -23,7 +23,7 @@ body {
 	display: flex;
 	justify-content: flex-start;
 	flex-wrap: nowrap;
-	border-bottom: 1px solid rgb(131, 131, 131);
+	border-bottom: 1px solid var(--hline-col);
 	margin-bottom: 10px;
 	width: 100%;
 }
@@ -55,7 +55,9 @@ body {
 }
 
 .brew-section-field-container {
-	background-color: rgb(189, 201, 211);
+	background-color: var(--textbox-bg);
+	color: white;
+	padding: 5px;
 	max-width: 95%;
 	min-width: 95%;
 	border: none;
@@ -85,8 +87,8 @@ body {
 
 .rem-item {
 	display: inline;
-	background-color: rgb(150, 111, 111);
-	color:rgb(227, 210, 210);
+	background-color: var(--rem-item-bg);
+	color:var(--rem-item-col);
 	/*margin-left: auto;*/
 }
 
@@ -102,8 +104,8 @@ body {
 
 .add-item {
 	display: inline-block;
-	background-color: rgb(111, 132, 150);
-	color: rgb(210, 219, 227);
+	background-color: var(--add-item-bg);
+	color: var(--add-item-col);
 }
 
 .button {
@@ -115,13 +117,13 @@ body {
 }
 
 .save-button {
-	background-color: rgb(75, 140, 71);
-	color:rgb(234, 245, 233);
+	background-color: var(--sav-button-bg);
+	color:var(--sav-button-col);
 }
 
 .delete-button {
-	background-color: rgb(140, 71, 71);
-	color:rgb(245, 233, 233);
+	background-color: var(--del-button-bg);
+	color:var(--del-button-col);
 }
 
 .button:hover {
@@ -133,6 +135,16 @@ body {
 }
 
 .view-edit-button {
-	background-color: rgb(71, 122, 140);
-	color:rgb(233, 243, 245);
+	background-color: var(--view-button-bg);
+	color:var(--view-button-col);
+}
+
+#editor {
+	width: 75vw;
+	margin: 0 auto 0 auto;
+}
+
+#editor form {
+	display: flex;
+	flex-direction: column;
 }

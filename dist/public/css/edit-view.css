@@ -1,0 +1,16 @@
+:root {
+	--info-bg: rgb(76, 81, 83);
+	--recipe-bg: rgb(76, 81, 83);
+	--hline-col: rgb(223, 223, 223);
+	--textbox-bg: rgb(50, 50, 51);
+	--rem-item-bg: rgb(126, 42, 42);
+	--rem-item-col: rgb(227, 210, 210);
+	--add-item-bg: rgb(75, 140, 71);
+	--add-item-col: rgb(210, 219, 227);
+	--sav-button-bg: rgb(75, 140, 71);
+	--sav-button-col: rgb(234, 245, 233);
+	--del-button-bg: rgb(126, 42, 42);
+	--del-button-col: rgb(245, 233, 233);
+	--view-button-bg: rgb(71, 122, 140);
+	--veiw-button-col: rgb(233, 243, 245);
+}
