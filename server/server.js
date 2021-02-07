@@ -173,6 +173,7 @@ app.get('/home', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 });
 
 app.get('/api/list/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
+	console.log(req.user);
 	let user_id = !!req.query.user ? req.query.user : req.user._id;
 	let num_records = 10;
 	let page_num = 0;
@@ -188,7 +189,7 @@ app.get('/api/list/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, re
 			page_num = p;
 		}
 	}
-	if (user_id === 'any') {  // change this so the logged-in user can see their private brews as well
+	if (user_id === 'any') {
 		Brew.find({ $or: [{ 'data.user_id': req.user._id }, { 'data.private': false }] }, 'data', { skip: (num_records * page_num), limit: num_records }, listFetch(user_id, num_records, page_num, res, req));
 	} else {
 		Brew.find({ 'data.user_id': user_id, $or: [{ 'data.user_id': req.user._id }, { 'data.private': false }] }, 'data', { skip: (num_records * page_num), limit: num_records }, listFetch(user_id, num_records, page_num, res, req));
@@ -197,7 +198,7 @@ app.get('/api/list/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, re
 
 app.get('/api/list/count', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	let user_id = !!req.query.user ? req.query.user : req.user._id;
-	if (user_id === 'any') {  // change this so the logged-in user can see their private brews as well
+	if (user_id === 'any') {
 		Brew.countDocuments({ $or: [{ 'data.user_id': req.user._id }, { 'data.private': false }] }, listCount(user_id, res, req));
 	} else {
 		Brew.countDocuments({ 'data.user_id': user_id, $or: [{ 'data.user_id': req.user._id }, { 'data.private': false }] }, listCount(user_id, res, req));
@@ -271,7 +272,10 @@ app.get('/api/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 app.post('/api/save', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	let new_data = Object.assign({}, req.body);
 	new_data.data.user_id = req.user._id;
-	if ((!req.body.hasOwnProperty("id")) || (!req.body.id) || (req.body.data.user_id != req.user._id)) {
+	new_data.data.user_name = req.user.username;
+	if ((!req.body.hasOwnProperty("id")) || (!req.body.id) || (req.body.data.user_id != req.user._id)) {  // new brew
+		new_data.data.created = new Date().getTime();
+		new_data.data.modified = new_data.data.created;
 		let brew = new Brew(new_data);
 		brew.save((err, data) => {
 			if (err) {
@@ -298,7 +302,8 @@ app.post('/api/save', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 				res.send(ret);
 			}	
 		})
-	} else {
+	} else {  // existing brew
+		new_data.data.modified = new Date().getTime();
 		Brew.findByIdAndUpdate(req.body.id, new_data, (err, data) => {
 			if (err) {
 				console.log("ERROR: could not update data.");

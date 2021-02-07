@@ -11,6 +11,16 @@
 	width: 50vw;
 }
 
+.list-text {
+	margin-top: 5px;
+}
+
+.list-text-label {
+	font-weight: bold;
+	font-style: italic;
+	padding-right: 10px;
+}
+
 .list-item {
 	text-decoration: none;
 	color: white;

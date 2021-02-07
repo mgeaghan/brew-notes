@@ -7,11 +7,33 @@ const ListItem = (props) => {
 		<Link className="list-item" to={"/view?id=" + props.id}>
 			<div className="list-item-inner">
 				<h4>{props.name}</h4>
-				<div className="list-text list-stlye">{props.style}</div>
-				<div className="list-text list-description">{props.description}</div>
-				<div className="list-text list-owner">Created by: {props.owner}</div>
-				<div className="list-text list-date">{props.date_created}</div>
-				<div className="list-text list-date">{props.date_modified}</div>
+				<table>
+					<tr className="list-text list-description">
+						<td className="list-text-label">Description:</td>
+						<td className="list-text-text">{props.description}</td>
+					</tr>
+					<tr className="list-text list-style">
+						<td className="list-text-label">Style:</td>
+						<td className="list-text-text">{props.style}</td>
+					</tr>
+					<tr className="list-text list-owner">
+						<td className="list-text-label">Created by:</td>
+						<td className="list-text-text">{props.owner}</td>
+					</tr>
+					<tr className="list-text list-date">
+						<td className="list-text-label">Created:</td>
+						<td className="list-text-text">{props.date_created}</td>
+					</tr>
+					<tr className="list-text list-date">
+						<td className="list-text-label">Last modified:</td>
+						<td className="list-text-text">{props.date_modified}</td>
+					</tr>
+				</table>
+				{/* <div className="list-text list-description">{props.description}</div>
+				<div className="list-text list-stlye"><span className="list-text-label">Style: </span>{props.style}</div>
+				<div className="list-text list-owner"><span className="list-text-label">Created by: </span>{props.owner}</div>
+				<div className="list-text list-date"><span className="list-text-label">Created: </span>{props.date_created}</div>
+				<div className="list-text list-date"><span className="list-text-label">Last Modified: </span>{props.date_modified}</div> */}
 			</div>
 		</Link>
 	);
@@ -25,9 +47,10 @@ const BrewList = (props) => {
 					id: x._id,
 					name: x.data.information.name,
 					style: x.data.information.style,
-					owner: x.data.user_id,
-					date_created: "today",
-					date_modified: "today"
+					description: x.data.information.description,
+					owner: x.data.user_name,  // originally x.data.user_id
+					date_created: new Date(x.data.created).toString(),
+					date_modified: new Date(x.data.modified).toString()
 				});
 			})}
 		</div>

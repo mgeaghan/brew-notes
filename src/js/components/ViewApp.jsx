@@ -82,6 +82,9 @@ class ViewApp extends React.Component {
 			id: null,
 			data: {
 				user_id: null,
+				user_name: null,
+				created: null,
+				modified: null,
 				private: false,
 				information: this._infoItem(),
 				fermentables: [this._recipeItem("fermentables")],

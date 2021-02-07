@@ -48,6 +48,9 @@ const step_misc = {
 const brewSchema = new mongoose.Schema({
 	data: {
 		user_id: String,
+		user_name: String,
+		created: Number,
+		modified: Number,
 		private: Boolean,
 		information: information,
 		fermentables: [fermentables],
