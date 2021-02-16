@@ -17,7 +17,8 @@ const ReactApp = (props) => {
 			<div>
 				<nav>
 					<Link to="/home">Home</Link>
-					<Link to="/list">List</Link>
+					<Link to="/browseapp">Browse Brews</Link>
+					<Link to="/list">My Brews</Link>
 					<Link to="/new">New</Link>
 					<a href="/logout">Logout</a>
 				</nav>
@@ -27,6 +28,12 @@ const ReactApp = (props) => {
 				<Switch>
 					<Route path="/home">
 						<Home />
+					</Route>
+					<Route path="/browseapp">
+						<BrowseApp />
+					</Route>
+					<Route path="/browse">
+						<ListApp user="any" />
 					</Route>
 					<Route path="/list">
 						<ListApp />
@@ -67,6 +74,16 @@ class NewApp extends React.Component {
 
 	render() {
 		return <Redirect to='/edit' />;
+	}
+}
+
+class BrowseApp extends React.Component {
+	componentDidMount() {
+		redirectOnUnauth();
+	}
+
+	render() {
+		return <Redirect to='/browse' />
 	}
 }
 

@@ -110,6 +110,7 @@ class ListApp extends React.Component {
 		super(props);
 
 		this.state = {
+			user_to_retrieve: props.hasOwnProperty('user') ? props.user : null,
 			num_to_retrieve: 10,
 			num_ret: null,
 			total_pages: null,
@@ -122,8 +123,10 @@ class ListApp extends React.Component {
 		this._handlePageChange = this._handlePageChange.bind(this);
 	}
 
-	_handleRetrieve(page = this.state.page, num = this.state.num_to_retrieve) {
-		let getList = fetch('/api/list/fetch?num=' + num + '&page=' + page, {
+	_handleRetrieve(page = this.state.page, num = this.state.num_to_retrieve, user = this.state.user_to_retrieve) {
+		let query_string = '?num=' + num + '&page=' + page;
+		if (user !== null) query_string += '&user=' + user;
+		let getList = fetch('/api/list/fetch' + query_string, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json'

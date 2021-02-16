@@ -271,9 +271,13 @@ app.get('/api/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 
 app.post('/api/save', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	let new_data = Object.assign({}, req.body);
-	new_data.data.user_id = req.user._id;
-	new_data.data.user_name = req.user.username;
+	console.log("===== update test =====");
+	console.log(req.body.data);
+	console.log(req.user);
+	console.log("=======================");
 	if ((!req.body.hasOwnProperty("id")) || (!req.body.id) || (req.body.data.user_id != req.user._id)) {  // new brew
+		new_data.data.user_id = req.user._id;
+		new_data.data.user_name = req.user.username;
 		new_data.data.created = new Date().getTime();
 		new_data.data.modified = new_data.data.created;
 		let brew = new Brew(new_data);

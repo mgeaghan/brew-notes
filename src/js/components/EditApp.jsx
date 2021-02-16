@@ -322,6 +322,9 @@ class EditApp extends React.Component {
 				message: "Please wait: saving..."
 			}
 		});
+		console.log("===== update test =====");
+		console.log(this.state);
+		console.log("=======================");
 		let submitData = fetch('/api/save', {
 			method: 'POST',
 			headers: {
