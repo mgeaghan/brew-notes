@@ -63,7 +63,8 @@ const listFetch = (user, num, page, res, req) => {
 			let ret = {
 				success: false,
 				message: "Error in retrieving data.",
-				user_id: null,
+				// user_id: null,
+				user_name: null,
 				num_req: num,
 				num_ret: null,
 				page: null,
@@ -79,7 +80,8 @@ const listFetch = (user, num, page, res, req) => {
 			let ret = {
 				success: true,
 				message: "Succesfully retrieved list of brews.",
-				user_id: user,
+				// user_id: user,
+				user_name: user,
 				num_req: num,
 				num_ret: num_retrieved,
 				page: page,
@@ -98,7 +100,8 @@ const listCount = (user, res, req) => {
 			let ret = {
 				success: false,
 				message: "Error in retrieving count.",
-				user_id: null,
+				// user_id: null,
+				user_name: null,
 				count: null
 			};
 			res.send(ret);
@@ -108,7 +111,8 @@ const listCount = (user, res, req) => {
 			let ret = {
 				success: true,
 				message: "Succesfully retrieved count.",
-				user_id: user,
+				// user_id: user,
+				user_name: user,
 				count: count
 			};
 			res.send(ret);
@@ -174,7 +178,8 @@ app.get('/home', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 
 app.get('/api/list/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	console.log(req.user);
-	let user_id = !!req.query.user ? req.query.user : req.user._id;
+	// let user_id = !!req.query.user ? req.query.user : req.user._id;
+	let user_name = !!req.query.user ? req.query.user : req.user.username;
 	let num_records = 10;
 	let page_num = 0;
 	if (req.query.num) {
@@ -189,20 +194,31 @@ app.get('/api/list/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, re
 			page_num = p;
 		}
 	}
-	if (user_id === 'any') {
-		Brew.find({ $or: [{ 'data.user_id': req.user._id }, { 'data.private': false }] }, 'data', { skip: (num_records * page_num), limit: num_records }, listFetch(user_id, num_records, page_num, res, req));
+	if (user_name === 'any') {
+		Brew.find({ $or: [{ 'data.user_name': req.user.username }, { 'data.private': false }] }, 'data', { skip: (num_records * page_num), limit: num_records }, listFetch(user_name, num_records, page_num, res, req));
 	} else {
-		Brew.find({ 'data.user_id': user_id, $or: [{ 'data.user_id': req.user._id }, { 'data.private': false }] }, 'data', { skip: (num_records * page_num), limit: num_records }, listFetch(user_id, num_records, page_num, res, req));
+		Brew.find({ 'data.user_name': user_name, $or: [{ 'data.user_name': req.user.username }, { 'data.private': false }] }, 'data', { skip: (num_records * page_num), limit: num_records }, listFetch(user_name, num_records, page_num, res, req));
 	}
+	// if (user_id === 'any') {
+	// 	Brew.find({ $or: [{ 'data.user_id': req.user._id }, { 'data.private': false }] }, 'data', { skip: (num_records * page_num), limit: num_records }, listFetch(user_id, num_records, page_num, res, req));
+	// } else {
+	// 	Brew.find({ 'data.user_id': user_id, $or: [{ 'data.user_id': req.user._id }, { 'data.private': false }] }, 'data', { skip: (num_records * page_num), limit: num_records }, listFetch(user_id, num_records, page_num, res, req));
+	// }
 });
 
 app.get('/api/list/count', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
-	let user_id = !!req.query.user ? req.query.user : req.user._id;
-	if (user_id === 'any') {
-		Brew.countDocuments({ $or: [{ 'data.user_id': req.user._id }, { 'data.private': false }] }, listCount(user_id, res, req));
+	// let user_id = !!req.query.user ? req.query.user : req.user._id;
+	let user_name = !!req.query.user ? req.query.user : req.user.username;
+	if (user_name === 'any') {
+		Brew.countDocuments({ $or: [{ 'data.user_name': req.user.username }, { 'data.private': false }] }, listCount(user_name, res, req));
 	} else {
-		Brew.countDocuments({ 'data.user_id': user_id, $or: [{ 'data.user_id': req.user._id }, { 'data.private': false }] }, listCount(user_id, res, req));
+		Brew.countDocuments({ 'data.user_name': user_name, $or: [{ 'data.user_name': req.user.username }, { 'data.private': false }] }, listCount(user_name, res, req));
 	}
+	// if (user_id === 'any') {
+	// 	Brew.countDocuments({ $or: [{ 'data.user_id': req.user._id }, { 'data.private': false }] }, listCount(user_id, res, req));
+	// } else {
+	// 	Brew.countDocuments({ 'data.user_id': user_id, $or: [{ 'data.user_id': req.user._id }, { 'data.private': false }] }, listCount(user_id, res, req));
+	// }
 })
 
 app.get('/api/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
