@@ -13,9 +13,9 @@ const SearchBar = (props) => {
 	);
 };
 
-const SearchList = () => {};
+const SearchBarDropdown = () => {};
 
-class SearchApp extends React.Component {
+class SearchBarApp extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -42,6 +42,7 @@ class SearchApp extends React.Component {
 				<SearchBar
 					name="searchbar"
 					id="searchbar"
+					onSearch="/search"
 					value={this.state.searchText}
 					onChange={this._handleChange}
 					submitValue="Search" />
@@ -50,4 +51,4 @@ class SearchApp extends React.Component {
 	}
 };
 
-export default SearchApp;
+export default SearchBarApp;

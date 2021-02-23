@@ -9,7 +9,8 @@ import {
 import ListApp from './ListApp.jsx';
 import EditApp from './EditApp.jsx';
 import ViewApp from './ViewApp.jsx';
-import SearchApp from './SearchApp.jsx';
+import SearchBarApp from './SearchBarApp.jsx';
+import SearchListApp from './SearchListApp.jsx';
 import redirectOnUnauth from '../checkAuth';
 
 const ReactApp = (props) => {
@@ -17,7 +18,7 @@ const ReactApp = (props) => {
 		<Router>
 			<div>
 				<nav>
-					<SearchApp />
+					<SearchBarApp />
 					<Link to="/home">Home</Link>
 					<Link to="/browse">Browse Brews</Link>
 					<Link to="/mylist">My Brews</Link>
@@ -48,6 +49,9 @@ const ReactApp = (props) => {
 					</Route>
 					<Route path="/view">
 						<ViewApp />
+					</Route>
+					<Route path="/search">
+						<SearchListApp />
 					</Route>
 				</Switch>
 			</div>
