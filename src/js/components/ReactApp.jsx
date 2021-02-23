@@ -9,6 +9,7 @@ import {
 import ListApp from './ListApp.jsx';
 import EditApp from './EditApp.jsx';
 import ViewApp from './ViewApp.jsx';
+import SearchApp from './SearchApp.jsx';
 import redirectOnUnauth from '../checkAuth';
 
 const ReactApp = (props) => {
@@ -16,6 +17,7 @@ const ReactApp = (props) => {
 		<Router>
 			<div>
 				<nav>
+					<SearchApp />
 					<Link to="/home">Home</Link>
 					<Link to="/browse">Browse Brews</Link>
 					<Link to="/mylist">My Brews</Link>
