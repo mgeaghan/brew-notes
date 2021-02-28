@@ -14,7 +14,7 @@ class SearchListApp extends React.Component {
 
 	_retrieveFromUrl() {
 		const urlParams = new URLSearchParams(window.location.search);
-		const search_string = urlParams.get('searchbar');
+		const search_string = urlParams.get('query');
 		if (search_string != null && search_string != '') {
 			this.setState({ searchText: search_string });
 		}

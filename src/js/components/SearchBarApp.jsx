@@ -40,7 +40,7 @@ class SearchBarApp extends React.Component {
 		return (
 			<div className="search-app">
 				<SearchBar
-					name="searchbar"
+					name="query"
 					id="searchbar"
 					onSearch="/search"
 					value={this.state.searchText}
