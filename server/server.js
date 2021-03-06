@@ -373,9 +373,10 @@ app.get('/api/search/:field', connectEnsureLogin.ensureLoggedIn('/login'), (req,
 		} else if (validUserFields.includes(req.params.field)) {
 			q = {};
 			q[req.params.field] = { $regex: search_regex, $options: 'i' };
-			query.$and.push(q);
-			console.log(query);
-			UserDetails.find(query, req.params.field, { skip: (num_records * page_num), limit: num_records }, listSearch(req.params.field, req.query.query, num_records, page_num, res, req));
+			// query.$and.push(q);
+			// console.log(query);
+			console.log(q);
+			UserDetails.find(q, req.params.field, { skip: (num_records * page_num), limit: num_records }, listSearch(req.params.field, req.query.query, num_records, page_num, res, req));
 		} else {
 			let ret = {
 				success: false,
