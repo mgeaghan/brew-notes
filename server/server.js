@@ -120,6 +120,49 @@ const listCount = (user, res, req) => {
 	};
 };
 
+const listSearch = (type, query, num, page, res, req) => {
+	return (err, data) => {
+		if (err) {
+			console.log("ERROR: could not retrieve list.");
+			console.log("Query: " + query);
+			console.log("Query type: " + type);
+			console.log("Number of records requested: " + num);
+			console.log("Page requested: " + page);
+			let ret = {
+				success: false,
+				message: "Error in retrieving data.",
+				// user_id: null,
+				query: query,
+				query_type: type,
+				num_req: num,
+				num_ret: null,
+				page: null,
+				data: null
+			};
+			res.send(ret);
+		} else {
+			let num_retrieved = data.length;
+			console.log("SUCCESS: retrieved list.");
+			console.log("Query: " + query);
+			console.log("Query type: " + type);
+			console.log("Number of records requested: " + num);
+			console.log("Page requested: " + page);
+			let ret = {
+				success: true,
+				message: "Succesfully retrieved search items.",
+				// user_id: user,
+				query: query,
+				query_type: type,
+				num_req: num,
+				num_ret: num_retrieved,
+				page: page,
+				data: data
+			};
+			res.send(ret);
+		}
+	};
+};
+
 // Routes
 app.get('/', (req, res) => {
 	res.sendFile(dist + '/index.html');
@@ -282,6 +325,74 @@ app.get('/api/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) =>
 				res.send(ret);
 			}
 		});
+	}
+});
+
+app.get('/api/search/:field', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
+	const validBrewFields = ['name', 'style', 'description'];
+	const validUserFields = ['username'];
+	if (req.query.hasOwnProperty('query') && req.query.query != '') {
+		console.log("Searching for '" + req.query.query + "'");
+		console.log("Searching brews...");
+		let num_records = 10;
+		let page_num = 0;
+		if (req.query.num) {
+			let n = parseInt(req.query.num);
+			if (Number.isInteger(n)) {
+				num_records = n;
+			}
+		}
+		if (req.query.page) {
+			let p = parseInt(req.query.page);
+			if (Number.isInteger(p)) {
+				page_num = p;
+			}
+		}
+		let search_regex = new RegExp(req.query.query);
+		let query = { $and: [{ $or: [{ 'data.user_name': req.user.username }, { 'data.private': false }] }] };
+		let q;
+		if (req.params.field === 'any') {
+			// query.$and.push({ $or: [] });
+			// query.$or = [];
+			q = { $or: [] };
+			let sub_query;
+			for (let field in validBrewFields) {
+				sub_query = {};
+				sub_query['data.information.' + validBrewFields[field]] = { $regex: search_regex, $options: 'i' };
+				q.$or.push(sub_query);
+			}
+			query.$and.push(q);
+			console.log(query);
+			Brew.find(query, 'data', { skip: (num_records * page_num), limit: num_records }, listSearch(req.params.field, req.query.query, num_records, page_num, res, req));
+		} else if (validBrewFields.includes(req.params.field)) {
+			q = {};
+			q['data.information.' + req.params.field] = { $regex: search_regex, $options: 'i' };
+			query.$and.push(q);
+			console.log(query);
+			Brew.find(query, 'data', { skip: (num_records * page_num), limit: num_records }, listSearch(req.params.field, req.query.query, num_records, page_num, res, req));
+		} else if (validUserFields.includes(req.params.field)) {
+			q = {};
+			q[req.params.field] = { $regex: search_regex, $options: 'i' };
+			query.$and.push(q);
+			console.log(query);
+			UserDetails.find(query, req.params.field, { skip: (num_records * page_num), limit: num_records }, listSearch(req.params.field, req.query.query, num_records, page_num, res, req));
+		} else {
+			let ret = {
+				success: false,
+				message: "Invalid search field.",
+				id: null,
+				data: null
+			};
+			res.send(ret);
+		}
+	} else {
+		let ret = {
+			success: false,
+			message: "No search query provided.",
+			id: null,
+			data: null
+		};
+		res.send(ret);
 	}
 });
 
