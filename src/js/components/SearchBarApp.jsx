@@ -6,8 +6,8 @@ const SearchBar = (props) => {
 		<div>
 			<form action={props.onSearch} method="GET">
 				<label for={props.name} className="searchbar-label"></label>
-				<input type="text" id={props.id} className="searchbar" name={props.name} value={props.value} onChange={props.onChange}></input>
-				<input type="submit" value={props.submitValue}></input>
+				<input type="text" id={props.id} className="search-bar" name={props.name} value={props.value} onChange={props.onChange} placeholder="Search..." autoComplete="off"></input>
+				<button type="submit" value={props.submitValue} className="search-button"><i class="fa fa-search"></i></button>
 			</form>
 		</div>
 	);
@@ -45,7 +45,7 @@ class SearchBarApp extends React.Component {
 					onSearch="/search"
 					value={this.state.searchText}
 					onChange={this._handleChange}
-					submitValue="Search" />
+					submitValue="" />
 			</div>
 		);
 	}

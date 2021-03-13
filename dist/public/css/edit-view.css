@@ -1,16 +1,21 @@
 :root {
-	--info-bg: rgb(76, 81, 83);
-	--recipe-bg: rgb(76, 81, 83);
-	--hline-col: rgb(223, 223, 223);
-	--textbox-bg: rgb(50, 50, 51);
-	--rem-item-bg: rgb(126, 42, 42);
-	--rem-item-col: rgb(227, 210, 210);
-	--add-item-bg: rgb(75, 140, 71);
-	--add-item-col: rgb(210, 219, 227);
-	--sav-button-bg: rgb(75, 140, 71);
-	--sav-button-col: rgb(234, 245, 233);
-	--del-button-bg: rgb(126, 42, 42);
-	--del-button-col: rgb(245, 233, 233);
-	--view-button-bg: rgb(71, 122, 140);
-	--veiw-button-col: rgb(233, 243, 245);
+	--red: rgb(92, 43, 43);
+	--green: rgb(62, 93, 60);
+	--blue: rgb(45, 61, 66);
+	--white: rgb(233, 233, 233);
+	--section-bg: rgb(47, 48, 49);
+	--info-bg: var(--section-bg);
+	--recipe-bg: var(--section-bg);
+	--hline-col: var(--white);
+	--textbox-bg: rgb(67, 68, 69);
+	--rem-item-bg: var(--red);
+	--rem-item-col: var(--white);
+	--add-item-bg: var(--green);
+	--add-item-col: var(--white);
+	--sav-button-bg: var(--green);
+	--sav-button-col: var(--white);
+	--del-button-bg: var(--red);
+	--del-button-col: var(--white);
+	--view-button-bg: var(--blue);
+	--veiw-button-col: var(--white);
 }

@@ -1,5 +1,5 @@
 :root {
-	--list-link-col: rgb(76, 81, 83);
+	--list-link-col: rgb(47, 48, 49);
 	--page-select-col: rgb(103, 119, 126);
 	--page-select-current-col: rgb(105, 139, 83);
 }
@@ -41,7 +41,7 @@
 
 .list-item-inner {
 	background-color: var(--list-link-col);
-	border: 1px solid;
+	/* border: 1px solid; */
 	border-radius: 5px;
 	margin: 0px;
 	padding: 10px;
@@ -51,7 +51,7 @@
 .list-item-inner:hover {
 	filter: brightness(150%);
 	/* color: black; */
-	border: 1px solid white;
+	/* border: 1px solid white; */
 }
 
 .page-selector {
@@ -68,7 +68,7 @@
 }
 
 .page-selector-link-current {
-	border: 1px solid;
+	/* border: 1px solid; */
 	border-radius: 5px;
 	padding: 10px;
 	background-color: var(--page-select-col);
@@ -85,7 +85,7 @@
 .page-selector-link:hover {
 	filter: brightness(150%);
 	color: black;
-	border: 1px solid white;
+	/* border: 1px solid white; */
 	font-weight: bold;
 }
 

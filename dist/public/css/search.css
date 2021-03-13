@@ -1,0 +1,40 @@
+:root {
+	--searchbar-dark: rgba(255, 255, 255, 0.05);
+	--searchbar-highlight: rgba(255, 255, 255, 0.2);
+}
+
+.search-app {
+	padding-right: 20px;
+	padding-left: 20px;
+}
+
+.search-button {
+	color: var(--white);
+	background-color: var(--searchbar-dark);
+	height: 100%;
+	border: none;
+	border-radius: 5px;
+	padding: 7px;
+	margin: 5px;
+}
+
+.search-button:hover {
+	background-color: var(--searchbar-highlight);
+}
+
+.search-bar {
+	background-color: var(--searchbar-dark);
+	border: none;
+	color: var(--white);
+	padding: 7px;
+	border-radius: 5px;
+	width: 60px;
+	transition: width .5s ease-in-out, background-color .5s ease-in-out;
+}
+
+.search-bar:focus {
+	background-color: var(--searchbar-highlight);
+	border: none;
+	outline: none;
+	width: 150px;
+}
