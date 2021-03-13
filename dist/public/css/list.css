@@ -4,7 +4,7 @@
 	--page-select-current-col: rgb(105, 139, 83);
 }
 
-.brew-list {
+.brew-user-list {
 	display: flex;
 	flex-direction: column;
 	margin: 0 auto 0 auto;

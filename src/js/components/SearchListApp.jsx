@@ -1,5 +1,6 @@
 import React from 'react';
 import redirectOnUnauth from '../checkAuth';
+import { ListItem, BrewList, UserList, PageSelector } from './ListComponents.jsx';
 
 class SearchListApp extends React.Component {
 	constructor(props) {
@@ -101,22 +102,29 @@ class SearchListApp extends React.Component {
 	render() {
 		return (
 			<div>
-				<div>You searched for: {this.state.searchText}</div>
+				<h1>Search results</h1>
 				{this.state.searchResultsUsers != null || this.state.searchResultsBrews != null ? <div>
-					<div>Your search results:</div>
 					{this.state.searchType === 'top_users_brews' ? <div>
-						<div>Top users:</div>
-						<div>{JSON.stringify(this.state.searchResultsUsers)}</div>
-						<div>Top brews:</div>
-						<div>{JSON.stringify(this.state.searchResultsBrews)}</div>
+						<h2><a href={"/search?query=" + this.state.searchText + "&field=username"}>Top users:</a></h2>
+						<div>
+							{!!this.state.searchResultsUsers && this.state.searchResultsUsers.data.length !== 0 ? <UserList data={this.state.searchResultsUsers.data} /> : <span className="search-no-results search-no-users">No matching usernames found.</span>}
+						</div>
+						<h2><a href={"/search?query=" + this.state.searchText + "&field=any"}>Top brews:</a></h2>
+						<div>
+							{!!this.state.searchResultsBrews && this.state.searchResultsBrews.data.length !== 0 ? <BrewList data={this.state.searchResultsBrews.data} /> : <span className="search-no-results search-no-brews">No matching brews found.</span>}
+						</div>
 					</div> : this.state.searchType === 'users' ? <div>
-						<div>Top users:</div>
-						<div>{JSON.stringify(this.state.searchResultsUsers)}</div>
+						<h2>Top users:</h2>
+						<div>
+							{!!this.state.searchResultsUsers && this.state.searchResultsUsers.data.length !== 0 ? <UserList data={this.state.searchResultsUsers.data} /> : <span className="search-no-results search-no-users">No matching usernames found.</span>}
+						</div>
 					</div> : this.state.searchType === 'brews' ? <div>
-						<div>Top brews:</div>
-						<div>{JSON.stringify(this.state.searchResultsBrews)}</div>
+						<h2>Top brews:</h2>
+						<div>
+							{!!this.state.searchResultsBrews && this.state.searchResultsBrews.data.length !== 0 ? <BrewList data={this.state.searchResultsBrews.data} /> : <span className="search-no-results search-no-brews">No matching brews found.</span>}
+						</div>
 					</div> : ""}
-				</div> : <div>Nothing to display!</div>}
+				</div> : <div className="search-failed">Something went wrong! Sorry!</div>}
 			</div>
 		);
 	}
