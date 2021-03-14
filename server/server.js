@@ -163,6 +163,42 @@ const listSearch = (type, query, num, page, res, req) => {
 	};
 };
 
+const listSearchCount = (query, type, field, res, req) => {
+	return (err, count) => {
+		if (err) {
+			console.log("ERROR: could not retrieve count.");
+			console.log("Query: " + query);
+			console.log("Type: " + type);
+			console.log("Field: " + field);
+			let ret = {
+				success: false,
+				message: "Error in retrieving count.",
+				// user_id: null,
+				query: query,
+				type: type,
+				field: field,
+				count: null
+			};
+			res.send(ret);
+		} else {
+			console.log("SUCCESS: retrieved list.");
+			console.log("Query: " + query);
+			console.log("Type: " + type);
+			console.log("Field: " + field);
+			let ret = {
+				success: true,
+				message: "Succesfully retrieved count.",
+				// user_id: user,
+				query: query,
+				type: type,
+				field: field,
+				count: count
+			};
+			res.send(ret);
+		}
+	};
+};
+
 // Routes
 app.get('/', (req, res) => {
 	res.sendFile(dist + '/index.html');
@@ -363,20 +399,35 @@ app.get('/api/search/:field', connectEnsureLogin.ensureLoggedIn('/login'), (req,
 			}
 			query.$and.push(q);
 			console.log(query);
-			Brew.find(query, 'data', { skip: (num_records * page_num), limit: num_records }, listSearch(req.params.field, req.query.query, num_records, page_num, res, req));
+			if (req.query.hasOwnProperty('count') && req.query.count === 'true') {
+				Brew.countDocuments(query, listSearchCount(req.query.query, 'brew', req.params.field, res, req));
+			} else {
+				Brew.find(query, 'data', { skip: (num_records * page_num), limit: num_records }, listSearch(req.params.field, req.query.query, num_records, page_num, res, req));
+			}
+			// Brew.find(query, 'data', { skip: (num_records * page_num), limit: num_records }, listSearch(req.params.field, req.query.query, num_records, page_num, res, req));
 		} else if (validBrewFields.includes(req.params.field)) {
 			q = {};
 			q['data.information.' + req.params.field] = { $regex: search_regex, $options: 'i' };
 			query.$and.push(q);
 			console.log(query);
-			Brew.find(query, 'data', { skip: (num_records * page_num), limit: num_records }, listSearch(req.params.field, req.query.query, num_records, page_num, res, req));
+			if (req.query.hasOwnProperty('count') && req.query.count === 'true') {
+				Brew.countDocuments(query, listSearchCount(req.query.query, 'brew', req.params.field, res, req));
+			} else {
+				Brew.find(query, 'data', { skip: (num_records * page_num), limit: num_records }, listSearch(req.params.field, req.query.query, num_records, page_num, res, req));
+			}
+			// Brew.find(query, 'data', { skip: (num_records * page_num), limit: num_records }, listSearch(req.params.field, req.query.query, num_records, page_num, res, req));
 		} else if (validUserFields.includes(req.params.field)) {
 			q = {};
 			q[req.params.field] = { $regex: search_regex, $options: 'i' };
 			// query.$and.push(q);
 			// console.log(query);
 			console.log(q);
-			UserDetails.find(q, req.params.field, { skip: (num_records * page_num), limit: num_records }, listSearch(req.params.field, req.query.query, num_records, page_num, res, req));
+			if (req.query.hasOwnProperty('count') && req.query.count === 'true') {
+				UserDetails.countDocuments(q, listSearchCount(req.query.query, 'user', req.params.field, res, req));
+			} else {
+				UserDetails.find(q, req.params.field, { skip: (num_records * page_num), limit: num_records }, listSearch(req.params.field, req.query.query, num_records, page_num, res, req));
+			}
+			// UserDetails.find(q, req.params.field, { skip: (num_records * page_num), limit: num_records }, listSearch(req.params.field, req.query.query, num_records, page_num, res, req));
 		} else {
 			let ret = {
 				success: false,

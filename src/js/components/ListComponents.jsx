@@ -89,6 +89,7 @@ const UserList = (props) => {
 };
 
 const PageSelector = (props) => {
+	console.log(props);
 	let current_page = props.page + 1;
 	let first_page = 1;
 	let last_page = props.total_pages;
@@ -121,6 +122,7 @@ const PageSelector = (props) => {
 
 	return (
 		<div className="page-selector">
+			<h4>Page:</h4>
 			{ page_list.map(x => {
 				if (!x) {
 					return <span className="page-selector-element page-selector-separator">...</span>

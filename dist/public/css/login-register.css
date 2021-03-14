@@ -1,3 +1,9 @@
 .username-password {
-	background-color: rgb(114, 128, 139);
+	background-color: rgb(67, 68, 69);
+	border: none;
+	border-radius: 5px;
+	padding: 5px;
+	margin: 5px;
+	color: rgb(233, 233, 233);
+	outline: none;
 }

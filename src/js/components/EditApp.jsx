@@ -165,7 +165,7 @@ const EditButton = (props) => {
 
 const ViewButton = (props) => {
 	return (
-		<div className="view-button view-edit-button button" onClick={props.onClick}>Finish Editing</div>
+		<div className="view-button view-edit-button button" onClick={props.onClick}>{props.text}</div>
 	);
 };
 
@@ -205,7 +205,8 @@ class EditApp extends React.Component {
 				message: null
 			},
 			redirect: null,
-			readOnly: this.props.hasOwnProperty('readOnly') ? this.props.readOnly : false
+			readOnly: this.props.hasOwnProperty('readOnly') ? this.props.readOnly : false,
+			changes_made: false
 		};
 		
 		this._handleChange = this._handleChange.bind(this);
@@ -272,6 +273,7 @@ class EditApp extends React.Component {
 				}
 			});
 			this.setState(update_state);
+			this.setState({ changes_made: true });
 		};
 	}
 
@@ -288,6 +290,7 @@ class EditApp extends React.Component {
 					}
 				});
 				this.setState(update_state);
+				this.setState({ changes_made: true });
 			};
 		};
 	}
@@ -418,9 +421,11 @@ class EditApp extends React.Component {
 
 	_handleView() {
 		if (this.state.id) {
-			this.setState({
-				redirect: '/view?id=' + this.state.id
-			});
+			if (!this.state.changes_made || confirm("Are you sure you want to discard all changes?")) {
+				this.setState({
+					redirect: '/view?id=' + this.state.id
+				});
+			}
 		}
 	}
 
@@ -489,7 +494,7 @@ class EditApp extends React.Component {
 					<div className="save-delete-view">
 						<SaveButton onClick={this._handleSave} />
 						{ this.state.id ? <DeleteButton onClick={this._handleDelete} /> : "" }
-						{ this.state.id ? <ViewButton onClick={this._handleView} /> : "" }
+						{ this.state.id ? <ViewButton onClick={this._handleView} text={this.state.changes_made ? "Discard changes" : "View" } /> : "" }
 					</div>
 					<h2>Recipe</h2>
 					<EditRecipeItemList
@@ -549,7 +554,7 @@ class EditApp extends React.Component {
 					<div className="save-delete-view">
 						<SaveButton onClick={this._handleSave} />
 						{ this.state.id ? <DeleteButton onClick={this._handleDelete} /> : "" }
-						{ this.state.id ? <ViewButton onClick={this._handleView} /> : "" }
+						{ this.state.id ? <ViewButton onClick={this._handleView} text={this.state.changes_made ? "Discard changes" : "View" } /> : "" }
 					</div>
 				</form>
 			</div>
