@@ -303,6 +303,7 @@ class EditApp extends React.Component {
 				}
 			});
 			this.setState(update_state);
+			this.setState({ changes_made: true });
 		};
 	}
 
@@ -314,6 +315,7 @@ class EditApp extends React.Component {
 				}
 			});
 			this.setState(update_state);
+			this.setState({ changes_made: true });
 		}
 	}
 
@@ -436,6 +438,7 @@ class EditApp extends React.Component {
 			}
 		});
 		this.setState(update_state);
+		this.setState({ changes_made: true });
 	}
 
 	_handleRetrieve(id_string) {

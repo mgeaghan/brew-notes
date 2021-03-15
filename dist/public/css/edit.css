@@ -40,6 +40,7 @@ body {
 }
 
 .recipe-item-idx {
+	display: none;
 	align-self: center;
 	margin-right: 10px;
 }
@@ -147,4 +148,96 @@ body {
 #editor form {
 	display: flex;
 	flex-direction: column;
+}
+
+/* Phones */
+@media screen and (max-width: 480px) {
+
+}
+
+/* Tablets */
+@media screen and (max-width: 768px) {
+	#editor {
+		width: 90vw;
+		margin: 0 auto 0 auto;
+	}
+	.brew-information {
+		padding: 10px;
+		margin: 5px;
+		max-width: 90vw;
+	}
+	.recipe-item-list {
+		display: block;
+		padding: 10px;
+		margin: 5px;
+		max-width: 90vw;
+	}
+	.recipe-item-wrapper {
+		flex-direction: column;
+		justify-content: flex-start;
+		flex-wrap: nowrap;
+		border-bottom: 1px solid var(--hline-col);
+		margin-bottom: 10px;
+		width: 100%;
+	}
+	.add-rem-item-button {
+		width: 90%;
+		margin-top: 10px;
+		margin-bottom: 10px;
+		text-align: center;
+	}
+	.add-item {
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	.rem-item {
+		position: relative;
+		left: -3px;
+	}
+	.recipe-item {
+		margin-bottom: 10px;
+		min-height: 100%;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-content: space-between;
+		align-items: flex-start;
+		flex-wrap: nowrap;
+		width: 100%;
+	}
+	.field-container {
+		width: 100%;
+	}
+	.recipe-item .field-container select {
+		/* width: 100%; */
+		min-width: calc(95% + 10px);
+		max-width: calc(95% + 10px);
+	}
+}
+
+@media screen and (max-width: 650px) {
+
+}
+
+@media screen and (min-width: 481px) and (max-width: 768px) {
+
+}
+
+/* Laptops */
+@media screen and (max-width: 1024px) {
+
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+
+}
+
+/* Desktops */
+@media screen and (min-width: 1025px) and (max-width: 1200px) {
+
+}
+
+/* Extra large screens */
+@media screen and (min-width: 1201px) {
+
 }

@@ -79,7 +79,7 @@
 		width: calc(100% - var(--search-button-width) - var(--search-app-padding) - (2 * (var(--search-bar-padding) + var(--search-button-margin) + var(--search-button-padding))));
 		transition: width 0s, background-color .5s ease-in-out;
 	}
-	.search-bar:hover {
+	.search-bar:focus {
 		width: calc(100% - var(--search-button-width) - var(--search-app-padding) - (2 * (var(--search-bar-padding) + var(--search-button-margin) + var(--search-button-padding))));
 	}
 }

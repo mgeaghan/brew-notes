@@ -11,6 +11,10 @@
 	width: 50vw;
 }
 
+.brew-list {
+	min-width: 300px;
+}
+
 .list-text {
 	margin-top: 5px;
 }
@@ -94,3 +98,53 @@
 }
 
 .page-selector-separator {}
+
+/* Phones */
+@media screen and (max-width: 480px) {
+	/* Use alternate list item */
+	.brew-user-list {
+		/* display: none; */
+		width: 90vw;
+		position: relative;
+		left: -10px;
+		right: 40px;
+	}
+	.list-item {
+		margin-left: 0px;
+	}
+}
+
+/* Tablets */
+@media screen and (max-width: 768px) {
+	/* Use alternate page selector */
+	.page-selector {
+		/* display: none; */
+	}
+}
+
+@media screen and (min-width: 481px) and (max-width: 768px) {
+	.brew-user-list {
+		width: 80vw;
+	}
+}
+
+/* Laptops */
+@media screen and (max-width: 1024px) {
+
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+	.brew-user-list {
+		width: 80vw;
+	}
+}
+
+/* Desktops */
+@media screen and (min-width: 1025px) and (max-width: 1200px) {
+
+}
+
+/* Extra large screens */
+@media screen and (min-width: 1201px) {
+
+}
