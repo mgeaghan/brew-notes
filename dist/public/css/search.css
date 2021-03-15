@@ -7,6 +7,7 @@
 	--search-button-margin: 5px;
 	--search-bar-padding: 7px;
 	--search-app-padding: 20px;
+	--search-bar-width: 60px;
 }
 
 .search-app {
@@ -35,7 +36,7 @@
 	color: var(--white);
 	padding: var(--search-bar-padding);
 	border-radius: 5px;
-	width: 60px;
+	width: var(--search-bar-width);
 	transition: width .5s ease-in-out, background-color .5s ease-in-out;
 }
 
@@ -68,12 +69,18 @@
 
 /* Tablets */
 @media screen and (max-width: 768px) {
+	:root {
+		--search-app-padding: 40px;
+	}
 	.search-app {
 		width: 100%;
 	}
 	.search-bar {
 		width: calc(100% - var(--search-button-width) - var(--search-app-padding) - (2 * (var(--search-bar-padding) + var(--search-button-margin) + var(--search-button-padding))));
-		transition: none;
+		transition: width 0s, background-color .5s ease-in-out;
+	}
+	.search-bar:hover {
+		width: calc(100% - var(--search-button-width) - var(--search-app-padding) - (2 * (var(--search-bar-padding) + var(--search-button-margin) + var(--search-button-padding))));
 	}
 }
 
@@ -82,6 +89,12 @@
 }
 
 /* Laptops */
+@media screen and (min-width: 769px) {
+	.search-bar {
+		width: var(--search-bar-width);
+	}
+}
+
 @media screen and (min-width: 769px) and (max-width: 1024px) {
 
 }

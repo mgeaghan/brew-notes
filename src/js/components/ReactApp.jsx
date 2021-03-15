@@ -17,7 +17,8 @@ const ReactApp = (props) => {
 	return (
 		<Router>
 			<div>
-				<nav>
+				<NavBars />
+				<nav id="nav-bar" className="nav-bar">
 					<SearchBarApp />
 					<Link to="/home">Home</Link>
 					<Link to="/browse">Browse Brews</Link>
@@ -57,6 +58,36 @@ const ReactApp = (props) => {
 			</div>
 		</Router>
 	);
+};
+
+class NavBars extends React.Component {
+	constructor(props) {
+		super(props);
+		this._handleNavExpand = this._handleNavExpand.bind(this);
+		this._handleResetNavExpand = this._handleResetNavExpand.bind(this);
+	}
+
+	_handleNavExpand() {
+		let x = document.getElementById("nav-bar");
+		if (x.className === "nav-bar") {
+			x.className += " responsive";
+		} else {
+			x.className = "nav-bar";
+		}
+	}
+
+	_handleResetNavExpand() {
+		let x = document.getElementById("nav-bar");
+		x.className = "nav-bar";
+	}
+
+	render() {
+		return (
+			<a href="javascript:void(0);" className="nav-icon" onClick={this._handleNavExpand} onBlur={this._handleResetNavExpand}>
+				<i className="fas fa-bars"></i>
+			</a>
+		);
+	}
 };
 
 class Home extends React.Component {

@@ -1,6 +1,8 @@
 :root {
 	--text-col: rgb(233, 233, 233);
 	--bg-col: rgb(27, 28, 29);
+	--nav-bg-col: rgb(21, 22, 24);
+	--nav-bg-col-a: rgba(21, 22, 24, 0.9);
 	--body-padding: 5px;
 	--nav-height: 50px;
 	--highlight-col: rgb(187, 158, 78);
@@ -12,6 +14,13 @@ body {
 	padding: var(--body-padding);
 }
 
+.nav-icon {
+	z-index: 20;
+	color: white;
+	position: fixed;
+	visibility: hidden;
+}
+
 nav {
 	display: flex;
 	flex-direction: row;
@@ -20,7 +29,7 @@ nav {
 	/* flex-wrap: wrap; */
 	width: 100vw;
 	border: none;
-	background-color: rgb(21, 22, 24);
+	background-color: var(--nav-bg-col);
 	position: fixed;
 	left: 0;
 	top: 0;
@@ -60,7 +69,6 @@ nav a:hover {
 		justify-content: flex-start;
 		align-items: flex-start;
 	}
-	nav a {}
 }
 
 /* Tablets */
@@ -69,6 +77,33 @@ nav a:hover {
 		flex-direction: column;
 		justify-content: flex-start;
 		align-items: flex-start;
+	}
+	nav a {
+		width: 100%;
+	}
+	.nav-icon {
+		visibility: visible;
+	}
+	.nav-bar a:not(:nth-child(2)) {
+		height: 0px;
+		visibility: hidden;
+		color: rgba(0, 0, 0, 0);
+		transition: height .5s ease-in-out, visibility .5s ease-in-out, color .5s ease-in-out;
+	}
+	.nav-bar.responsive a:not(:nth-child(2)) {
+		height: var(--nav-height);
+		visibility: visible;
+		color: var(--text-col);
+	}
+	.nav-bar {
+		background-color: var(--nav-bg-col);
+		transition: background-color .5s ease-in-out;
+	}
+	.nav-bar.responsive {
+		background-color: var(--nav-bg-col-a);
+	}
+	#nav-padder {
+		height: calc(2 * var(--nav-height));
 	}
 }
 
@@ -80,6 +115,7 @@ nav a:hover {
 @media screen and (min-width: 769px) and (max-width: 1024px) {
 	nav a {
 		font-size: 1em;
+		padding: 0 20px 0 20px;
 	}
 }
 
@@ -91,4 +127,10 @@ nav a:hover {
 /* Extra large screens */
 @media screen and (min-width: 1201px) {
 
+}
+
+/* Stop animations on window resize */
+.resize-animation-stopper * {
+	animation: none !important;
+	transition: none !important;
 }
