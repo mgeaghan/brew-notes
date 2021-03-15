@@ -14,6 +14,7 @@ body {
 
 nav {
 	display: flex;
+	flex-direction: row;
 	justify-content: flex-end;
 	align-items: center;
 	/* flex-wrap: wrap; */
@@ -50,4 +51,44 @@ nav a:hover {
 #nav-padder {
 	display: block;
 	height: var(--nav-height);
+}
+
+/* Phones */
+@media screen and (max-width: 480px) {
+	nav {
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: flex-start;
+	}
+	nav a {}
+}
+
+/* Tablets */
+@media screen and (max-width: 768px) {
+	nav {
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: flex-start;
+	}
+}
+
+@media screen and (min-width: 481px) and (max-width: 768px) {
+
+}
+
+/* Laptops */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+	nav a {
+		font-size: 1em;
+	}
+}
+
+/* Desktops */
+@media screen and (min-width: 1025px) and (max-width: 1200px) {
+
+}
+
+/* Extra large screens */
+@media screen and (min-width: 1201px) {
+
 }

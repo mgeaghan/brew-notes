@@ -149,15 +149,20 @@ class SearchListApp extends React.Component {
 				<h1>Search results</h1>
 				{this.state.searchResultsUsers != null || this.state.searchResultsBrews != null ? <div>
 					{this.state.searchType === 'top_users_brews' ? <div>
-						<h2><a href={"/search?query=" + this.state.searchText + "&field=username"}>Top users:</a></h2>
+						<h2 className="search-top-heading">Top users:</h2>
 						<div>
+							<a className="search-page-link" href={"/search?query=" + this.state.searchText + "&field=username"}>Full user search results</a>
 							{!!this.state.searchResultsUsers && this.state.searchResultsUsers.data.length !== 0 ? <UserList data={this.state.searchResultsUsers.data} /> :
 								!!this.state.searchResultsUsers && this.state.searchResultsUsers.data.length === 0 ? <span className="search-no-results search-no-users">No matching usernames found.</span> : ''}
+							<a className="search-page-link" href={"/search?query=" + this.state.searchText + "&field=username"}>Full user search results</a>
 						</div>
-						<h2><a href={"/search?query=" + this.state.searchText + "&field=any"}>Top brews:</a></h2>
+						<hr className="search-top-users-brews-hr"></hr>
+						<h2 className="search-top-heading">Top brews:</h2>
 						<div>
+							<a className="search-page-link" href={"/search?query=" + this.state.searchText + "&field=any"}>Full brew search results</a>
 							{!!this.state.searchResultsBrews && this.state.searchResultsBrews.data.length !== 0 ? <BrewList data={this.state.searchResultsBrews.data} /> :
 								!!this.state.searchResultsBrews && this.state.searchResultsBrews.data.length === 0 ? <span className="search-no-results search-no-brews">No matching brews found.</span> : ''}
+							<a className="search-page-link" href={"/search?query=" + this.state.searchText + "&field=any"}>Full brew search results</a>
 						</div>
 					</div> : this.state.searchType === 'users' ? <div>
 						<h2>Top users:</h2>

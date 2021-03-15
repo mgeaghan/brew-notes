@@ -1,11 +1,17 @@
 :root {
 	--searchbar-dark: rgba(255, 255, 255, 0.05);
 	--searchbar-highlight: rgba(255, 255, 255, 0.2);
+	--grey: rgb(133, 133, 133);
+	--search-button-width: 35px;
+	--search-button-padding: 7px;
+	--search-button-margin: 5px;
+	--search-bar-padding: 7px;
+	--search-app-padding: 20px;
 }
 
 .search-app {
-	padding-right: 20px;
-	padding-left: 20px;
+	padding-right: var(--search-app-padding);
+	padding-left: var(--search-app-padding);
 }
 
 .search-button {
@@ -14,8 +20,9 @@
 	height: 100%;
 	border: none;
 	border-radius: 5px;
-	padding: 7px;
-	margin: 5px;
+	padding: var(--search-button-padding);
+	margin: var(--search-button-margin);
+	width: var(--search-button-width);
 }
 
 .search-button:hover {
@@ -26,7 +33,7 @@
 	background-color: var(--searchbar-dark);
 	border: none;
 	color: var(--white);
-	padding: 7px;
+	padding: var(--search-bar-padding);
 	border-radius: 5px;
 	width: 60px;
 	transition: width .5s ease-in-out, background-color .5s ease-in-out;
@@ -37,4 +44,54 @@
 	border: none;
 	outline: none;
 	width: 150px;
+}
+
+.search-page-link {
+	text-decoration: underline;
+	font-style: italic;
+	color: var(--grey);
+	display: block;
+	text-align: center;
+	margin: 30px;
+}
+
+.search-top-users-brews-hr {
+	width: 75%;
+	color: var(--grey);
+	border-color: var(--grey);
+}
+
+/* Phones */
+@media screen and (max-width: 480px) {
+
+}
+
+/* Tablets */
+@media screen and (max-width: 768px) {
+	.search-app {
+		width: 100%;
+	}
+	.search-bar {
+		width: calc(100% - var(--search-button-width) - var(--search-app-padding) - (2 * (var(--search-bar-padding) + var(--search-button-margin) + var(--search-button-padding))));
+		transition: none;
+	}
+}
+
+@media screen and (min-width: 481px) and (max-width: 768px) {
+
+}
+
+/* Laptops */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+
+}
+
+/* Desktops */
+@media screen and (min-width: 1025px) and (max-width: 1200px) {
+
+}
+
+/* Extra large screens */
+@media screen and (min-width: 1201px) {
+
 }
