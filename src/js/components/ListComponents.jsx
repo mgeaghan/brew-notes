@@ -119,10 +119,19 @@ const PageSelector = (props) => {
 		}
 		page_list.push(last_page);
 	}
+	let full_page_list = [];
+	for (let i = 1; i <= props.total_pages; i++) {
+		full_page_list.push(i);
+	}
 
 	return (
 		<div className="page-selector">
 			<h4>Page:</h4>
+			<select className="page-selector-select" onChange={props.changePageSelector}>
+				{ full_page_list.map(x => {
+					return <option value={x} selected={x === current_page} className={"page-selector-option" + (x === current_page ? " page-selector-option-selected" : "")}>{x}</option>
+				}) }
+			</select>
 			{ page_list.map(x => {
 				if (!x) {
 					return <span className="page-selector-element page-selector-separator">...</span>

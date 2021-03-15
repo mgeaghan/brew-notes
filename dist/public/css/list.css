@@ -67,6 +67,17 @@
 	cursor: default;
 }
 
+.page-selector-select {
+	width: 100%;
+	min-height: 30px;
+	background-color: var(--page-select-col);
+	color: white;
+}
+
+.page-selector-option-selected {
+	background-color: var(--page-select-current-col);
+}
+
 .page-selector-element {
 	margin: 10px;
 }
@@ -99,8 +110,8 @@
 
 .page-selector-separator {}
 
-/* Phones */
-@media screen and (max-width: 480px) {
+/* 480, 768, 1024, 1200 */
+@media screen and (max-width: 481px) {
 	/* Use alternate list item */
 	.brew-user-list {
 		/* display: none; */
@@ -114,37 +125,33 @@
 	}
 }
 
-/* Tablets */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 769px) {
 	/* Use alternate page selector */
-	.page-selector {
-		/* display: none; */
+	.page-selector-element {
+		display: none;
+	}
+	.page-selector-select {
+		display: block;
 	}
 }
 
-@media screen and (min-width: 481px) and (max-width: 768px) {
+@media screen and (min-width: 481px) and (max-width: 769px) {
 	.brew-user-list {
 		width: 80vw;
 	}
 }
 
-/* Laptops */
-@media screen and (max-width: 1024px) {
-
+@media screen and (min-width: 769px) {
+	.page-selector-element {
+		display: inline;
+	}
+	.page-selector-select {
+		display: none;
+	}
 }
 
 @media screen and (min-width: 769px) and (max-width: 1024px) {
 	.brew-user-list {
 		width: 80vw;
 	}
-}
-
-/* Desktops */
-@media screen and (min-width: 1025px) and (max-width: 1200px) {
-
-}
-
-/* Extra large screens */
-@media screen and (min-width: 1201px) {
-
 }

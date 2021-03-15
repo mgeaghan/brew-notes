@@ -62,7 +62,7 @@ nav a:hover {
 	height: var(--nav-height);
 }
 
-/* Phones */
+/* 480, 768, 1024, 1200 */
 @media screen and (max-width: 480px) {
 	nav {
 		flex-direction: column;
@@ -71,8 +71,7 @@ nav a:hover {
 	}
 }
 
-/* Tablets */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 769px) {
 	nav {
 		flex-direction: column;
 		justify-content: flex-start;
@@ -107,26 +106,11 @@ nav a:hover {
 	}
 }
 
-@media screen and (min-width: 481px) and (max-width: 768px) {
-
-}
-
-/* Laptops */
 @media screen and (min-width: 769px) and (max-width: 1024px) {
 	nav a {
 		font-size: 1em;
 		padding: 0 20px 0 20px;
 	}
-}
-
-/* Desktops */
-@media screen and (min-width: 1025px) and (max-width: 1200px) {
-
-}
-
-/* Extra large screens */
-@media screen and (min-width: 1201px) {
-
 }
 
 /* Stop animations on window resize */

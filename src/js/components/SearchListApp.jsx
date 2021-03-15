@@ -20,6 +20,7 @@ class SearchListApp extends React.Component {
 		this._handleRetrieve = this._handleRetrieve.bind(this);
 		this._retrieveFromUrl = this._retrieveFromUrl.bind(this);
 		this._handlePageChange = this._handlePageChange.bind(this);
+		this._handlePageChangeSelector = this._handlePageChangeSelector.bind(this);
 		this._handlePageCount = this._handlePageCount.bind(this);
 	}
 
@@ -110,6 +111,10 @@ class SearchListApp extends React.Component {
 		};
 	}
 
+	_handlePageChangeSelector(event) {
+		return this._handlePageChange(event.target.value - 1)();
+	}
+
 	_handlePageCount(query = this.state.searchText, field = this.state.searchField) {
 		let query_string = '';
 		if (field !== null) {
@@ -170,7 +175,8 @@ class SearchListApp extends React.Component {
 							<PageSelector 
 								page={this.state.page}
 								total_pages={this.state.total_pages}
-								changePage={this._handlePageChange} />
+								changePage={this._handlePageChange}
+								changePageSelector={this._handlePageChangeSelector} />
 							{!!this.state.searchResultsUsers && this.state.searchResultsUsers.data.length !== 0 ? <UserList data={this.state.searchResultsUsers.data} /> :
 								!!this.state.searchResultsUsers && this.state.searchResultsUsers.data.length === 0 ? <span className="search-no-results search-no-users">No matching usernames found.</span> : ''}
 						</div>
@@ -180,7 +186,8 @@ class SearchListApp extends React.Component {
 							<PageSelector 
 								page={this.state.page}
 								total_pages={this.state.total_pages}
-								changePage={this._handlePageChange} />
+								changePage={this._handlePageChange}
+								changePageSelector={this._handlePageChangeSelector} />
 							{!!this.state.searchResultsBrews && this.state.searchResultsBrews.data.length !== 0 ? <BrewList data={this.state.searchResultsBrews.data} /> :
 								!!this.state.searchResultsBrews && this.state.searchResultsBrews.data.length === 0 ? <span className="search-no-results search-no-brews">No matching brews found.</span> : ''}
 						</div>

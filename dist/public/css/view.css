@@ -85,13 +85,9 @@ body {
 	flex-direction: column;
 }
 
-/* Phones */
-@media screen and (max-width: 480px) {
+/* 480, 768, 1024, 1200 */
 
-}
-
-/* Tablets */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 769px) {
 	#viewer {
 		width: 90vw;
 		margin: 0 auto 0 auto;
@@ -116,27 +112,4 @@ body {
 	.view-brew-section-field-container {
 		width: 100%;
 	}
-}
-
-@media screen and (min-width: 481px) and (max-width: 768px) {
-
-}
-
-/* Laptops */
-@media screen and (max-width: 1024px) {
-
-}
-
-@media screen and (min-width: 769px) and (max-width: 1024px) {
-
-}
-
-/* Desktops */
-@media screen and (min-width: 1025px) and (max-width: 1200px) {
-
-}
-
-/* Extra large screens */
-@media screen and (min-width: 1201px) {
-
 }

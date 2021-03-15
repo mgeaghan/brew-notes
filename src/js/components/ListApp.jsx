@@ -19,6 +19,7 @@ class ListApp extends React.Component {
 		this._handleRetrieve = this._handleRetrieve.bind(this);
 		this._handlePageCount = this._handlePageCount.bind(this);
 		this._handlePageChange = this._handlePageChange.bind(this);
+		this._handlePageChangeSelector = this._handlePageChangeSelector.bind(this);
 		this._getUserFromUrl = this._getUserFromUrl.bind(this);
 		this._retrieveFromUrl = this._retrieveFromUrl.bind(this);
 		this._countFromUrl = this._countFromUrl.bind(this);
@@ -95,6 +96,10 @@ class ListApp extends React.Component {
 		};
 	}
 
+	_handlePageChangeSelector(event) {
+		return this._handlePageChange(event.target.value - 1)();
+	}
+
 	componentDidMount() {
 		redirectOnUnauth();
 		// this._handleRetrieve();
@@ -111,7 +116,8 @@ class ListApp extends React.Component {
 					<PageSelector
 						page={this.state.page}
 						total_pages={this.state.total_pages}
-						changePage={this._handlePageChange} />
+						changePage={this._handlePageChange}
+						changePageSelector={this._handlePageChangeSelector} />
 					<BrewList data={this.state.data}/>
 				</div>) : <div>
 					Loading brew list...

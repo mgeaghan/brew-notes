@@ -62,13 +62,9 @@
 	border-color: var(--grey);
 }
 
-/* Phones */
-@media screen and (max-width: 480px) {
+/* 480, 768, 1024, 1200 */
 
-}
-
-/* Tablets */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 769px) {
 	:root {
 		--search-app-padding: 40px;
 	}
@@ -84,27 +80,8 @@
 	}
 }
 
-@media screen and (min-width: 481px) and (max-width: 768px) {
-
-}
-
-/* Laptops */
 @media screen and (min-width: 769px) {
 	.search-bar {
 		width: var(--search-bar-width);
 	}
-}
-
-@media screen and (min-width: 769px) and (max-width: 1024px) {
-
-}
-
-/* Desktops */
-@media screen and (min-width: 1025px) and (max-width: 1200px) {
-
-}
-
-/* Extra large screens */
-@media screen and (min-width: 1201px) {
-
 }
