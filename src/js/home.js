@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactApp from './components/ReactApp.jsx';
+import { ReactApp } from './components/ReactApp.jsx';
 
 // Force refresh on history traversal
 window.addEventListener( "pageshow", (event) => {

@@ -204,7 +204,7 @@ app.get('/', (req, res) => {
 	res.sendFile(dist + '/index.html');
 });
 
-app.get('/login', (req, res) => {
+app.get('/login', redirectIfLoggedIn('/home'), (req, res) => {
 	res.sendFile(dist + '/login.html');
 })
 
@@ -223,7 +223,7 @@ app.post('/login', (req, res, next) => {
 				return next(err);
 			}
 
-			return res.redirect('/');
+			return res.redirect('/home');
 		});
 	})(req, res, next);
 });
@@ -253,6 +253,13 @@ app.get('/logout', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 
 app.get('/home', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
 	res.sendFile(dist + '/home.html');
+});
+
+app.get('/api/user', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {
+	return res.send({
+		user_name: req.user.username,
+		user_id: req.user._id
+	});
 });
 
 app.get('/api/list/fetch', connectEnsureLogin.ensureLoggedIn('/login'), (req, res) => {

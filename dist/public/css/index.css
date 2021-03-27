@@ -1,4 +1,18 @@
 :root {
+	--index-red: rgb(92, 43, 43);
+	--index-green: rgb(62, 93, 60);
+	--index-blue: rgb(58, 89, 98);
+	--index-white: rgb(233, 233, 233);
+	--index-bg-col: rgb(47, 48, 49);
+	--signin-bg-col: var(--index-green);
+	--signing-col: var(--index-white);
+	--register-bg-col: var(--index-blue);
+	--register-col: var(--index-white);
+	--home-bg-col: var(--index-green);
+	--home-col: var(--index-white);
+	--logout-bg-col: var(--index-red);
+	--logout-col: var(--index-white);
+	--root-prompt-button-col: var(--index-white);
 	--text-col: rgb(233, 233, 233);
 	--bg-col: rgb(27, 28, 29);
 	--nav-bg-col: rgb(21, 22, 24);
@@ -6,6 +20,7 @@
 	--body-padding: 5px;
 	--nav-height: 50px;
 	--highlight-col: rgb(187, 158, 78);
+	--highlight-col-a: rgba(187, 158, 78, 0.5);
 }
 
 body {
@@ -13,6 +28,52 @@ body {
 	color: var(--text-col);
 	padding: var(--body-padding);
 	font-family: Arial, Helvetica, sans-serif;
+}
+
+#root-prompt {
+	width: 50vw;
+	max-width: 600px;
+	border: solid white 1px;
+	border-radius: 15px;
+	padding: 20px;
+	margin-top: 50px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: var(--index-bg-col);
+}
+
+#root-prompt-buttons {
+	display: flex;
+	justify-content: center;
+}
+
+.root-prompt-button {
+	border: none;
+	padding: 10px;
+	border-radius: 5px;
+	color: var(--root-prompt-button-col);
+	margin: 20px;
+	font-size: 1.2em;
+}
+
+.root-prompt-button:hover {
+	filter: brightness(150%);
+}
+
+#button-signin {
+	background-color: var(--signin-bg-col);
+}
+
+#button-register {
+	background-color: var(--register-bg-col);
+}
+
+#button-home {
+	background-color: var(--home-bg-col);
+}
+
+#button-logout {
+	background-color: var(--logout-bg-col);
 }
 
 .nav-icon {
@@ -101,13 +162,13 @@ nav a:hover {
 	.nav-bar a {
 		padding-left: 60px;
 	}
-	.nav-bar a:not(:nth-child(2)) {
+	.nav-bar a:not(:nth-child(1)) {
 		height: 0px;
 		visibility: hidden;
 		color: rgba(0, 0, 0, 0);
 		transition: height .5s ease-in-out, visibility .5s ease-in-out, color .5s ease-in-out;
 	}
-	.nav-bar.responsive a:not(:nth-child(2)) {
+	.nav-bar.responsive a:not(:nth-child(1)) {
 		height: var(--nav-height);
 		visibility: visible;
 		color: var(--text-col);

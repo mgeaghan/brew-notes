@@ -66,7 +66,7 @@
 
 @media screen and (max-width: 769px) {
 	:root {
-		--search-app-padding: 40px;
+		--search-app-padding: 60px;
 	}
 	.search-app {
 		width: 100%;

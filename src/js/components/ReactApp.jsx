@@ -12,6 +12,7 @@ import ViewApp from './ViewApp.jsx';
 import SearchBarApp from './SearchBarApp.jsx';
 import SearchListApp from './SearchListApp.jsx';
 import redirectOnUnauth from '../checkAuth';
+import Home from './HomeApp.jsx';
 
 const ReactApp = (props) => {
 	return (
@@ -90,20 +91,6 @@ class NavBars extends React.Component {
 	}
 };
 
-class Home extends React.Component {
-	componentDidMount() {
-		redirectOnUnauth();
-	}
-
-	render() {
-		return (
-			<div>
-				Private home page.
-			</div>
-		);
-	}
-};
-
 class NewApp extends React.Component {
 	componentDidMount() {
 		redirectOnUnauth();
@@ -134,4 +121,4 @@ class MyListApp extends React.Component {
 	}
 }
 
-export default ReactApp;
+export { ReactApp, NavBars };
