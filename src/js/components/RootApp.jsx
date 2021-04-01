@@ -34,10 +34,19 @@ class RootApp extends React.Component {
 		return (
 			<div id="root-main">
 				<NavBars />
-				<nav id="nav-bar" className="nav-bar">
+				{
+					this.state.user_name === null ? <nav id="nav-bar" className="nav-bar">
+						<a href="/login">Login</a>
+						<a href="/register">Register</a>
+					</nav> : <nav id="nav-bar" className="nav-bar">
+						<a href="/home">Home</a>
+						<a href="/logout">Logout</a>
+					</nav>
+				}
+				{/* <nav id="nav-bar" className="nav-bar">
 					<a href="/home">Home</a>
 					<a href="/logout">Logout</a>
-				</nav>
+				</nav> */}
 				<div id="nav-padder"></div>
 				<div id="root-heading">
 					<h1>Brew Notes</h1>
@@ -53,7 +62,7 @@ class RootApp extends React.Component {
 					{
 						this.state.user_name === null ? <div id="root-prompt-buttons">
 							<a href='/login' id="button-signin" className="root-prompt-button">Sign In</a>
-							<a href='register' id="button-register" className="root-prompt-button">Register</a>
+							<a href='/register' id="button-register" className="root-prompt-button">Register</a>
 						</div> : <div id="root-prompt-buttons">
 							<a href='/home' id="button-home" className="root-prompt-button">Home</a>
 							<a href='/logout' id="button-logout" className="root-prompt-button">Logout</a>
